@@ -32,6 +32,7 @@ In the build directory run the following command.
     spray
 
 ## Dependencies
+- ![Eigen 3.3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 
 ## Contributing
 - ![Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
