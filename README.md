@@ -33,6 +33,8 @@ In the build directory run the following command.
 
 ## Dependencies
 - ![Eigen 3.3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+- ![OpenGL](https://www.opengl.org/)
+- ![GLUT](https://www.opengl.org/resources/libraries/glut/)
 
 ## Contributing
 - ![Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
