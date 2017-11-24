@@ -16,6 +16,7 @@ constexpr unsigned char glut_key_esc = 27;
 
 struct state_t {
   float angle;
+  float cube_size;
 };
 
 extern state_t state;
@@ -26,8 +27,12 @@ void exec();
 void close();
 void render();
 void resize(int width, int height);
+void idle();
 void process_normal_keys(unsigned char key, int x, int y);
 void process_special_keys(int key, int x, int y);
+void process_mouse_buttons(int button, int button_state, int x, int y);
+void process_mouse_move(int x, int y);
+void process_mouse_wheel(int wheel, int direction, int x, int y);
 
 }  // namespace glut_app
 }  // namespace spray
