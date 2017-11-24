@@ -9,18 +9,22 @@
 #include <GL/glut.h>
 #endif
 
+#include "scene.h"
+#include "stl_loader.h"
+
 namespace spray {
 namespace glut_app {
 
 constexpr unsigned char glut_key_esc = 27;
 
-struct state_t {
+struct state {
   float angle;
   float cube_size;
   float distance;
+  ray_trace::scene scene;
 };
 
-extern state_t state;
+extern state data;
 
 void init(int argc, char** argv);
 void exec();
