@@ -15,10 +15,18 @@ For downloading 'spray' and starting with the build process do the following.
     cmake ..
     make
 
+Instead of `make` you can type the following.
+
+    cmake --build .
+
 ### Windows
 
     cmake -G "NMake Makefiles" ..
     nmake
+
+Instead of `nmake` you can type the following.
+    
+    cmake --build .
 
 ## Usage
 ### Linux and MacOS
@@ -35,6 +43,7 @@ In the build directory run the following command.
 - ![Eigen 3.3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 - ![OpenGL](https://www.opengl.org/)
 - ![GLUT](https://www.opengl.org/resources/libraries/glut/)
+- ![FreeGLUT](http://freeglut.sourceforge.net/)
 
 ## Contributing
 - ![Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
