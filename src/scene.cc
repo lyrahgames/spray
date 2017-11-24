@@ -1,7 +1,7 @@
 #include "scene.h"
 
 namespace spray {
-namespace ray_trace {
+namespace ray_tracer {
 
 scene load_stl(std::string file_name) {
   std::fstream in(file_name);
@@ -34,5 +34,5 @@ scene load_stl(std::string file_name) {
   return result;
 }
 
-}  // namespace ray_trace
+}  // namespace ray_tracer
 }  // namespace spray

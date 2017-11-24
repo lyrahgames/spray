@@ -9,7 +9,7 @@
 #include "primitive.h"
 
 namespace spray {
-namespace ray_trace {
+namespace ray_tracer {
 
 struct scene {
   std::vector<primitive> primitive_vector;
@@ -17,7 +17,7 @@ struct scene {
 
 scene load_stl(std::string file_name);
 
-}  // namespace ray_trace
+}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_SCENE_H_

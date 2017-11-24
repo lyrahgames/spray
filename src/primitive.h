@@ -4,14 +4,14 @@
 #include <Eigen/Core>
 
 namespace spray {
-namespace ray_trace {
+namespace ray_tracer {
 
 struct primitive {
   Eigen::Vector3f vertex[3];
   Eigen::Vector3f normal;
 };
 
-}  // namespace ray_trace
+}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_PRIMITIVE_H_

@@ -21,7 +21,7 @@ struct state {
   float angle;
   float cube_size;
   float distance;
-  ray_trace::scene scene;
+  ray_tracer::scene scene;
 };
 
 extern state data;
