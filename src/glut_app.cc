@@ -8,14 +8,15 @@ state_t state{};
 void init(int argc, char** argv) {
   state.angle = 0.0f;
   state.cube_size = 2.0f;
+  state.distance = 10.0f;
 
   glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
+  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
   glutInitWindowPosition(100, 100);
   glutInitWindowSize(320, 320);
   glutCreateWindow("GLUT Tutorial");
 
-  glutCloseFunc(close);
+  // glutCloseFunc(close);
   glutDisplayFunc(render);
   glutReshapeFunc(resize);
   glutIdleFunc(idle);
@@ -23,14 +24,15 @@ void init(int argc, char** argv) {
   glutSpecialFunc(process_special_keys);
   glutMouseFunc(process_mouse_buttons);
   glutMotionFunc(process_mouse_move);
-  glutMouseWheelFunc(process_mouse_wheel);
+  // glutMouseWheelFunc(process_mouse_wheel);
 
-  glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+  // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
+  // GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 }
 
 void exec() { glutMainLoop(); }
 
-void close() { std::cout << "succesful..." << std::flush; }
+void close() { std::cout << "successful..." << std::flush; }
 
 void resize(int width, int height) {
   if (height == 0) height = 1;
@@ -48,7 +50,7 @@ void render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
-  gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+  gluLookAt(0.0f, 0.0f, state.distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
   glRotatef(state.angle, 0.0f, 1.0f, 0.0f);
 
   glBegin(GL_TRIANGLES);
@@ -67,7 +69,8 @@ void idle() {}
 void process_normal_keys(unsigned char key, int x, int y) {
   switch (key) {
     case glut_key_esc:
-      glutLeaveMainLoop();
+      // glutLeaveMainLoop();
+      exit(0);
       break;
   }
 }
@@ -79,6 +82,12 @@ void process_special_keys(int key, int x, int y) {
       break;
     case GLUT_KEY_RIGHT:
       state.angle -= 1.0f;
+      break;
+    case GLUT_KEY_UP:
+      state.distance += 1.0f;
+      break;
+    case GLUT_KEY_DOWN:
+      state.distance -= 1.0f;
       break;
   }
 

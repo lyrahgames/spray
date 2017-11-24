@@ -4,9 +4,9 @@
 #include <iostream>
 
 #ifdef __APPLE__
-#include <GLUT/freeglut.h>
+#include <GLUT/glut.h>
 #else
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 #endif
 
 namespace spray {
@@ -17,6 +17,7 @@ constexpr unsigned char glut_key_esc = 27;
 struct state_t {
   float angle;
   float cube_size;
+  float distance;
 };
 
 extern state_t state;
