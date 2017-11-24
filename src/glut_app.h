@@ -17,14 +17,14 @@ namespace glut_app {
 
 constexpr unsigned char glut_key_esc = 27;
 
-struct state_t {
+struct state {
   float angle;
   float cube_size;
   float distance;
-  ray_trace::scene_t scene;
+  ray_trace::scene scene;
 };
 
-extern state_t state;
+extern state data;
 
 void init(int argc, char** argv);
 void exec();

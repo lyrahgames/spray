@@ -3,19 +3,19 @@
 namespace spray {
 namespace glut_app {
 
-state_t state{};
+state data{};
 
 void init(int argc, char** argv) {
-  state.angle = 0.0f;
-  state.cube_size = 2.0f;
-  state.distance = 100.0f;
+  data.angle = 0.0f;
+  data.cube_size = 2.0f;
+  data.distance = 100.0f;
 
   if (argc != 2) {
     std::cout << "usage: spray <file name>" << std::endl;
     exit(0);
   }
 
-  state.scene = ray_trace::load_stl(argv[1]);
+  data.scene = ray_trace::load_stl(argv[1]);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -59,8 +59,8 @@ void render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
-  gluLookAt(0.0f, 0.0f, state.distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-  glRotatef(state.angle, 0.0f, 1.0f, 0.0f);
+  gluLookAt(0.0f, 0.0f, data.distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+  glRotatef(data.angle, 0.0f, 1.0f, 0.0f);
 
   // glBegin(GL_TRIANGLES);
   // glVertex3f(-2.0f, -2.0f, 0.0f);
@@ -69,17 +69,17 @@ void render() {
   // glEnd();
 
   glBegin(GL_TRIANGLES);
-  for (int i = 0; i < state.scene.primitive_vector.size(); ++i) {
-    glVertex3fv(static_cast<GLfloat*>(
-        state.scene.primitive_vector[i].vertex[0].data()));
-    glVertex3fv(static_cast<GLfloat*>(
-        state.scene.primitive_vector[i].vertex[1].data()));
-    glVertex3fv(static_cast<GLfloat*>(
-        state.scene.primitive_vector[i].vertex[2].data()));
+  for (std::size_t i = 0; i < data.scene.primitive_vector.size(); ++i) {
+    glVertex3fv(
+        static_cast<GLfloat*>(data.scene.primitive_vector[i].vertex[0].data()));
+    glVertex3fv(
+        static_cast<GLfloat*>(data.scene.primitive_vector[i].vertex[1].data()));
+    glVertex3fv(
+        static_cast<GLfloat*>(data.scene.primitive_vector[i].vertex[2].data()));
   }
   glEnd();
 
-  glutWireCube(state.cube_size);
+  glutWireCube(data.cube_size);
 
   glutSwapBuffers();
 }
@@ -98,16 +98,16 @@ void process_normal_keys(unsigned char key, int x, int y) {
 void process_special_keys(int key, int x, int y) {
   switch (key) {
     case GLUT_KEY_LEFT:
-      state.angle += 1.0f;
+      data.angle += 1.0f;
       break;
     case GLUT_KEY_RIGHT:
-      state.angle -= 1.0f;
+      data.angle -= 1.0f;
       break;
     case GLUT_KEY_UP:
-      state.distance += 1.0f;
+      data.distance += 1.0f;
       break;
     case GLUT_KEY_DOWN:
-      state.distance -= 1.0f;
+      data.distance -= 1.0f;
       break;
   }
 

@@ -6,7 +6,7 @@
 namespace spray {
 namespace ray_trace {
 
-struct primitive_t {
+struct primitive {
   Eigen::Vector3f vertex[3];
   Eigen::Vector3f normal;
 };
