@@ -8,7 +8,14 @@ state_t state{};
 void init(int argc, char** argv) {
   state.angle = 0.0f;
   state.cube_size = 2.0f;
-  state.distance = 10.0f;
+  state.distance = 100.0f;
+
+  if (argc != 2) {
+    std::cout << "usage: spray <file name>" << std::endl;
+    exit(0);
+  }
+
+  state.scene = ray_trace::load_stl(argv[1]);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -26,6 +33,8 @@ void init(int argc, char** argv) {
   glutMotionFunc(process_mouse_move);
   // glutMouseWheelFunc(process_mouse_wheel);
 
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
   // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
   // GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 }
@@ -42,7 +51,7 @@ void resize(int width, int height) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glViewport(0, 0, width, height);
-  gluPerspective(45.0f, aspect_ratio, 0.1f, 100.0f);
+  gluPerspective(45.0f, aspect_ratio, 0.1f, 1000.0f);
   glMatrixMode(GL_MODELVIEW);
 }
 
@@ -53,10 +62,21 @@ void render() {
   gluLookAt(0.0f, 0.0f, state.distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
   glRotatef(state.angle, 0.0f, 1.0f, 0.0f);
 
+  // glBegin(GL_TRIANGLES);
+  // glVertex3f(-2.0f, -2.0f, 0.0f);
+  // glVertex3f(2.0f, 0.0f, 0.0f);
+  // glVertex3f(0.0f, 2.0f, 0.0f);
+  // glEnd();
+
   glBegin(GL_TRIANGLES);
-  glVertex3f(-2.0f, -2.0f, 0.0f);
-  glVertex3f(2.0f, 0.0f, 0.0f);
-  glVertex3f(0.0f, 2.0f, 0.0f);
+  for (int i = 0; i < state.scene.primitive_vector.size(); ++i) {
+    glVertex3fv(static_cast<GLfloat*>(
+        state.scene.primitive_vector[i].vertex[0].data()));
+    glVertex3fv(static_cast<GLfloat*>(
+        state.scene.primitive_vector[i].vertex[1].data()));
+    glVertex3fv(static_cast<GLfloat*>(
+        state.scene.primitive_vector[i].vertex[2].data()));
+  }
   glEnd();
 
   glutWireCube(state.cube_size);
