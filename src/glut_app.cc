@@ -37,10 +37,12 @@ void init(int argc, char** argv) {
   glutMotionFunc(process_mouse_move);
   // glutMouseWheelFunc(process_mouse_wheel);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
   // GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+
+  glClearColor(1, 0, 0, 1);
 }
 
 void exec() { glutMainLoop(); }
@@ -49,6 +51,8 @@ void close() { std::cout << "successful..." << std::flush; }
 
 void resize(int width, int height) {
   if (height == 0) height = 1;
+
+  data.rtkernel.cam.set_screen_resolution(height, width);
 
   const float aspect_ratio = static_cast<float>(width) / height;
 
@@ -62,8 +66,10 @@ void resize(int width, int height) {
 void render() {
   data.rtkernel.cam.look_at(Eigen::Vector3f(0, 0, data.distance),
                             Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(0, 1, 0));
+  // data.rtkernel.clear();
   data.rtkernel.render();
 
+  glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
@@ -76,21 +82,21 @@ void render() {
   // glVertex3f(0.0f, 2.0f, 0.0f);
   // glEnd();
 
-  glBegin(GL_TRIANGLES);
-  for (std::size_t i = 0; i < data.scene.primitive_vector.size(); ++i) {
-    glVertex3fv(
-        static_cast<GLfloat*>(data.scene.primitive_vector[i].vertex[0].data()));
-    glVertex3fv(
-        static_cast<GLfloat*>(data.scene.primitive_vector[i].vertex[1].data()));
-    glVertex3fv(
-        static_cast<GLfloat*>(data.scene.primitive_vector[i].vertex[2].data()));
-  }
-  glEnd();
+  // glBegin(GL_TRIANGLES);
+  // for (std::size_t i = 0; i < data.rtkernel.s.primitive_vector.size(); ++i) {
+  //   glVertex3fv(static_cast<GLfloat*>(
+  //       data.rtkernel.s.primitive_vector[i].vertex[0].data()));
+  //   glVertex3fv(static_cast<GLfloat*>(
+  //       data.rtkernel.s.primitive_vector[i].vertex[1].data()));
+  //   glVertex3fv(static_cast<GLfloat*>(
+  //       data.rtkernel.s.primitive_vector[i].vertex[2].data()));
+  // }
+  // glEnd();
 
   glutWireCube(data.cube_size);
 
   glDrawPixels(data.rtkernel.cam.pixel_cols(), data.rtkernel.cam.pixel_rows(),
-               GL_RGB, GL_FLOAT, data.rtkernel.accum_buffer.data());
+               GL_RGBA, GL_FLOAT, data.rtkernel.accum_buffer.data());
 
   glutSwapBuffers();
 }

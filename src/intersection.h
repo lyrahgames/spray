@@ -1,6 +1,7 @@
 #ifndef SPRAY_INTERSECTION_H_
 #define SPRAY_INTERSECTION_H_
 
+#include <Eigen/Dense>
 #include "primitive.h"
 #include "ray.h"
 

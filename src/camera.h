@@ -20,6 +20,8 @@ class camera {
   float field_of_view() const { return field_of_view_; }
   int pixel_rows() const { return pixel_rows_; }
   int pixel_cols() const { return pixel_cols_; }
+  int screen_width() const { return pixel_cols_; }
+  int screen_height() const { return pixel_rows_; }
   float pixel_size() const { return pixel_size_; }
   float aspect_ratio() const { return aspect_ratio_; }
 

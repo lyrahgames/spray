@@ -24,7 +24,7 @@ bool intersect(const ray& r, const primitive& p) {
 
   if (v < 0.0f || u + v > 1.0f) return false;
 
-  const float t = edge2.dot(q_vector) * inverse_determinant;
+  // const float t = edge2.dot(q_vector) * inverse_determinant;
 
   return true;
 }
