@@ -9,8 +9,8 @@
 #include <GL/glut.h>
 #endif
 
+#include "kernel.h"
 #include "scene.h"
-#include "stl_loader.h"
 
 namespace spray {
 namespace glut_app {
@@ -22,6 +22,7 @@ struct state {
   float cube_size;
   float distance;
   ray_tracer::scene scene;
+  ray_tracer::kernel rtkernel;
 };
 
 extern state data;

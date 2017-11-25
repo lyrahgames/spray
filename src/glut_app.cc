@@ -15,12 +15,16 @@ void init(int argc, char** argv) {
     exit(0);
   }
 
-  data.scene = ray_trace::load_stl(argv[1]);
+  data.rtkernel.s = ray_tracer::load_stl(argv[1]);
+
+  data.rtkernel.cam.set_screen_resolution(320, 320);
+  data.rtkernel.cam.set_field_of_view(0.5f * M_PI);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
   glutInitWindowPosition(100, 100);
-  glutInitWindowSize(320, 320);
+  glutInitWindowSize(data.rtkernel.cam.pixel_cols(),
+                     data.rtkernel.cam.pixel_rows());
   glutCreateWindow("GLUT Tutorial");
 
   // glutCloseFunc(close);
@@ -56,6 +60,10 @@ void resize(int width, int height) {
 }
 
 void render() {
+  data.rtkernel.cam.look_at(Eigen::Vector3f(0, 0, data.distance),
+                            Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(0, 1, 0));
+  data.rtkernel.render();
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
@@ -80,6 +88,9 @@ void render() {
   glEnd();
 
   glutWireCube(data.cube_size);
+
+  glDrawPixels(data.rtkernel.cam.pixel_cols(), data.rtkernel.cam.pixel_rows(),
+               GL_RGB, GL_FLOAT, data.rtkernel.accum_buffer.data());
 
   glutSwapBuffers();
 }
