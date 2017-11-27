@@ -28,7 +28,8 @@ struct kernel {
       for (int j = 0; j < cam.pixel_cols(); ++j) {
         const int index = cam.pixel_cols() * i + j;
         const ray r = cam.primary_ray(j, i);
-        accum_buffer[index] = Eigen::Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
+        // accum_buffer[index] = Eigen::Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
+        accum_buffer[index] = Eigen::Vector4f(0.2f, 0.2f, 0.2f, 1.0f);
 
         int pid = -1;
         Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
@@ -46,9 +47,7 @@ struct kernel {
           }
         }
 
-        if (pid == -1) {
-          accum_buffer[index] = Eigen::Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
-        } else {
+        if (pid != -1) {
           float dot = -r.direction.dot(s.primitive_vector[pid].normal);
           if (dot < 0.0f) dot = 0.0f;
           accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1.0f);
