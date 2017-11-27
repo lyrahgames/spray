@@ -10,12 +10,10 @@ namespace ray_tracer {
 
 constexpr float intersection_epsilon = 1e-6;
 
-struct intersection {
-  float u, v, t;
-};
-
 // moeller-trumbore-algorithm
-bool intersect(const ray& r, const primitive& p);
+bool intersect(const ray& r, const Eigen::Vector3f& vertex0,
+               const Eigen::Vector3f& vertex1, const Eigen::Vector3f& vertex2,
+               Eigen::Vector3f& uvt);
 
 }  // namespace ray_tracer
 }  // namespace spray

@@ -10,7 +10,6 @@ namespace ray_tracer {
 
 struct kernel {
   std::vector<Eigen::Vector4f> accum_buffer;
-  // std::vector<unsigned char> pixel_buffer;
   camera cam;
   scene s;
 
@@ -31,15 +30,28 @@ struct kernel {
         const ray r = cam.primary_ray(j, i);
         accum_buffer[index] = Eigen::Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
 
+        int pid = -1;
+        Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
+
         for (int p = 0; p < static_cast<int>(s.primitive_vector.size()); ++p) {
-          if (intersect(r, s.primitive_vector[p])) {
-            const float dot = r.direction.dot(s.primitive_vector[p].normal);
+          Eigen::Vector3f tmp_uvt;
 
-            if (dot < 0.0f) continue;
-
-            accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1.0f);
-            break;
+          if (intersect(r, s.primitive_vector[p].vertex[0],
+                        s.primitive_vector[p].vertex[1],
+                        s.primitive_vector[p].vertex[2], tmp_uvt)) {
+            if (tmp_uvt(2) < uvt(2)) {
+              uvt = tmp_uvt;
+              pid = p;
+            }
           }
+        }
+
+        if (pid == -1) {
+          accum_buffer[index] = Eigen::Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
+        } else {
+          float dot = -r.direction.dot(s.primitive_vector[pid].normal);
+          if (dot < 0.0f) dot = 0.0f;
+          accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1.0f);
         }
       }
     }

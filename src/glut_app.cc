@@ -25,7 +25,7 @@ void init(int argc, char** argv) {
   glutInitWindowPosition(100, 100);
   glutInitWindowSize(data.rtkernel.cam.pixel_cols(),
                      data.rtkernel.cam.pixel_rows());
-  glutCreateWindow("GLUT Tutorial");
+  glutCreateWindow("spray: simulated particle ray tracer");
 
   // glutCloseFunc(close);
   glutDisplayFunc(render);
@@ -37,8 +37,6 @@ void init(int argc, char** argv) {
   glutMotionFunc(process_mouse_move);
   // glutMouseWheelFunc(process_mouse_wheel);
 
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
   // glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
   // GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
@@ -47,7 +45,7 @@ void init(int argc, char** argv) {
 
 void exec() { glutMainLoop(); }
 
-void close() { std::cout << "successful..." << std::flush; }
+void close() {}
 
 void resize(int width, int height) {
   if (height == 0) height = 1;
@@ -64,17 +62,12 @@ void resize(int width, int height) {
 }
 
 void render() {
-  data.rtkernel.cam.look_at(Eigen::Vector3f(0, 0, data.distance),
-                            Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(0, 1, 0));
-  // data.rtkernel.clear();
-  data.rtkernel.render();
-
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glLoadIdentity();
-  gluLookAt(0.0f, 0.0f, data.distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-  glRotatef(data.angle, 0.0f, 1.0f, 0.0f);
+  // glLoadIdentity();
+  // gluLookAt(0.0f, 0.0f, data.distance, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+  // glRotatef(data.angle, 0.0f, 1.0f, 0.0f);
 
   // glBegin(GL_TRIANGLES);
   // glVertex3f(-2.0f, -2.0f, 0.0f);
@@ -93,8 +86,12 @@ void render() {
   // }
   // glEnd();
 
-  glutWireCube(data.cube_size);
+  // glutWireCube(data.cube_size);
 
+  data.rtkernel.cam.look_at(
+      data.distance * Eigen::Vector3f(cosf(data.angle), 0, sinf(data.angle)),
+      Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(0, 1, 0));
+  data.rtkernel.render();
   glDrawPixels(data.rtkernel.cam.pixel_cols(), data.rtkernel.cam.pixel_rows(),
                GL_RGBA, GL_FLOAT, data.rtkernel.accum_buffer.data());
 
@@ -106,7 +103,6 @@ void idle() {}
 void process_normal_keys(unsigned char key, int x, int y) {
   switch (key) {
     case glut_key_esc:
-      // glutLeaveMainLoop();
       exit(0);
       break;
   }
@@ -115,16 +111,16 @@ void process_normal_keys(unsigned char key, int x, int y) {
 void process_special_keys(int key, int x, int y) {
   switch (key) {
     case GLUT_KEY_LEFT:
-      data.angle += 1.0f;
+      data.angle += 0.1f;
       break;
     case GLUT_KEY_RIGHT:
-      data.angle -= 1.0f;
+      data.angle -= 0.1f;
       break;
     case GLUT_KEY_UP:
-      data.distance += 1.0f;
+      data.distance += 0.5f;
       break;
     case GLUT_KEY_DOWN:
-      data.distance -= 1.0f;
+      data.distance -= 0.5f;
       break;
   }
 
