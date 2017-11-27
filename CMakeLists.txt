@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7.2)
 
 project(spray VERSION 0.1)
 
-add_executable(spray src/main.cc src/glut_app.cc src/scene.cc)
+add_executable(spray src/main.cc src/glut_app.cc src/scene.cc src/camera.cc src/intersection.cc)
 
 set_property(TARGET spray PROPERTY CXX_STANDARD 14)
 
