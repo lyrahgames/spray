@@ -25,6 +25,11 @@ class camera {
   float pixel_size() const { return pixel_size_; }
   float aspect_ratio() const { return aspect_ratio_; }
 
+  // void set_position(const Vector3f& position) { position_ = position_; }
+  // void set_direction(const Vector3f& direction) {
+  //   direction_ = direction;
+  //   direction.normalize();
+  // }
   void look_at(const Vector3f& eye, const Vector3f& center, const Vector3f& up);
   void set_screen_resolution(int width, int height);
   void set_field_of_view(float fov);

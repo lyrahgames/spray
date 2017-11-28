@@ -1,6 +1,7 @@
 #ifndef SPRAY_GLUT_APP_H_
 #define SPRAY_GLUT_APP_H_
 
+#include <Eigen/Dense>
 #include <chrono>
 #include <iostream>
 
@@ -20,12 +21,17 @@ namespace glut_app {
 constexpr unsigned char glut_key_esc = 27;
 
 struct state {
-  float angle;
-  float cube_size;
-  float distance;
+  int key_modifiers;
+  int old_mouse_x;
+  int old_mouse_y;
   ray_tracer::scene scene;
   ray_tracer::kernel rtkernel;
   fps_meter fpsm;
+  Eigen::Vector3f world_center;
+  Eigen::Vector3f world_up;
+  float camera_distance;
+  float camera_altitude;
+  float camera_azimuth;
 };
 
 extern state data;
@@ -41,6 +47,7 @@ void process_normal_keys(unsigned char key, int x, int y);
 void process_special_keys(int key, int x, int y);
 void process_mouse_buttons(int button, int button_state, int x, int y);
 void process_mouse_move(int x, int y);
+void process_passive_mouse_move(int x, int y);
 void process_mouse_wheel(int wheel, int direction, int x, int y);
 
 }  // namespace glut_app
