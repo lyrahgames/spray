@@ -10,6 +10,7 @@
 #include <GL/glut.h>
 #endif
 
+#include "fps_meter.h"
 #include "kernel.h"
 #include "scene.h"
 
@@ -24,9 +25,7 @@ struct state {
   float distance;
   ray_tracer::scene scene;
   ray_tracer::kernel rtkernel;
-  std::chrono::time_point<std::chrono::system_clock> last_time;
-  int frame_count;
-  static constexpr float time_bound = 1.0f;
+  fps_meter fpsm;
 };
 
 extern state data;

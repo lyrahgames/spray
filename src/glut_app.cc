@@ -10,9 +10,6 @@ void init(int argc, char** argv) {
   data.cube_size = 2.0f;
   data.distance = 100.0f;
 
-  data.frame_count = 0;
-  data.last_time = std::chrono::system_clock::now();
-
   if (argc != 2) {
     std::cout << "usage: spray <file name>" << std::endl;
     exit(0);
@@ -66,19 +63,7 @@ void resize(int width, int height) {
 }
 
 void render() {
-  const auto current_time = std::chrono::system_clock::now();
-  const float diff_time =
-      std::chrono::duration<float>(current_time - data.last_time).count();
-  if (diff_time >= data.time_bound) {
-    std::cout << "fps: " << static_cast<float>(data.frame_count) / diff_time
-              << "\t spf: " << diff_time / static_cast<float>(data.frame_count)
-              << " s" << std::endl;
-
-    data.last_time = current_time;
-    data.frame_count = 0;
-  } else {
-    data.frame_count++;
-  }
+  data.fpsm.measure();
 
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
