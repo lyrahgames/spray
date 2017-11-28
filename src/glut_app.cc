@@ -30,7 +30,8 @@ void init(int argc, char** argv) {
   // glutCloseFunc(close);
   glutDisplayFunc(render);
   glutReshapeFunc(resize);
-  glutIdleFunc(idle);
+  // glutIdleFunc(idle);
+  glutIdleFunc(render);
   glutKeyboardFunc(process_normal_keys);
   glutSpecialFunc(process_special_keys);
   glutMouseFunc(process_mouse_buttons);
@@ -62,6 +63,8 @@ void resize(int width, int height) {
 }
 
 void render() {
+  data.fpsm.measure();
+
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -94,7 +97,6 @@ void render() {
   data.rtkernel.render();
   glDrawPixels(data.rtkernel.cam.pixel_cols(), data.rtkernel.cam.pixel_rows(),
                GL_RGBA, GL_FLOAT, data.rtkernel.accum_buffer.data());
-
   glutSwapBuffers();
 }
 

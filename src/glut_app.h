@@ -1,6 +1,7 @@
 #ifndef SPRAY_GLUT_APP_H_
 #define SPRAY_GLUT_APP_H_
 
+#include <chrono>
 #include <iostream>
 
 #ifdef __APPLE__
@@ -9,6 +10,7 @@
 #include <GL/glut.h>
 #endif
 
+#include "fps_meter.h"
 #include "kernel.h"
 #include "scene.h"
 
@@ -23,6 +25,7 @@ struct state {
   float distance;
   ray_tracer::scene scene;
   ray_tracer::kernel rtkernel;
+  fps_meter fpsm;
 };
 
 extern state data;
