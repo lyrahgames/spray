@@ -31,6 +31,32 @@ scene load_stl(std::string file_name) {
     in.ignore(2);
   }
 
+  // compute bounds and parameters
+  Eigen::Array3f tmp_max(-INFINITY, -INFINITY, -INFINITY);
+  Eigen::Array3f tmp_min(INFINITY, INFINITY, INFINITY);
+
+  for (int i = 0; i < static_cast<int>(primitive_count); ++i) {
+    tmp_max = tmp_max.max(
+        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[0]));
+    tmp_max = tmp_max.max(
+        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[1]));
+    tmp_max = tmp_max.max(
+        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[2]));
+
+    tmp_min = tmp_min.min(
+        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[0]));
+    tmp_min = tmp_min.min(
+        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[1]));
+    tmp_min = tmp_min.min(
+        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[2]));
+  }
+
+  result.max = static_cast<Eigen::Vector3f>(tmp_max);
+  result.min = static_cast<Eigen::Vector3f>(tmp_min);
+
+  result.center = 0.5f * (result.max + result.min);
+  result.radius = 0.5f * (result.max - result.min).norm();
+
   return result;
 }
 

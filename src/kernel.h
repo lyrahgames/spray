@@ -24,6 +24,7 @@ struct kernel {
   void render() {
     accum_buffer.resize(cam.pixel_cols() * cam.pixel_rows());
 
+#pragma omp parallel for
     for (int i = 0; i < cam.pixel_rows(); ++i) {
       for (int j = 0; j < cam.pixel_cols(); ++j) {
         const int index = cam.pixel_cols() * i + j;

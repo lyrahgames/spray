@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include <chrono>
+#include <iomanip>
 #include <iostream>
 
 #ifdef __APPLE__
@@ -13,6 +14,7 @@
 
 #include "fps_meter.h"
 #include "kernel.h"
+#include "orthonormal_frame.h"
 #include "scene.h"
 
 namespace spray {
@@ -27,8 +29,7 @@ struct state {
   ray_tracer::scene scene;
   ray_tracer::kernel rtkernel;
   fps_meter fpsm;
-  Eigen::Vector3f world_center;
-  Eigen::Vector3f world_up;
+  ray_tracer::orthonormal_frame world;
   float camera_distance;
   float camera_altitude;
   float camera_azimuth;

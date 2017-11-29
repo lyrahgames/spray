@@ -15,63 +15,29 @@ void init(int argc, char** argv) {
 
   data.rtkernel.s = ray_tracer::load_stl(argv[1]);
 
-  data.camera_altitude = 0.0f;
-  data.camera_azimuth = 0.0f;
-
-  Eigen::Array3f world_max = static_cast<Eigen::Array3f>(
-      data.rtkernel.s.primitive_vector[0].vertex[0]);
-  Eigen::Array3f world_min = static_cast<Eigen::Array3f>(
-      data.rtkernel.s.primitive_vector[0].vertex[0]);
-
-  world_max = world_max.max(static_cast<Eigen::Array3f>(
-      data.rtkernel.s.primitive_vector[0].vertex[1]));
-  world_max = world_max.max(static_cast<Eigen::Array3f>(
-      data.rtkernel.s.primitive_vector[0].vertex[2]));
-
-  world_min = world_min.min(static_cast<Eigen::Array3f>(
-      data.rtkernel.s.primitive_vector[0].vertex[1]));
-  world_min = world_min.min(static_cast<Eigen::Array3f>(
-      data.rtkernel.s.primitive_vector[0].vertex[2]));
-
-  for (int i = 1; i < static_cast<int>(data.rtkernel.s.primitive_vector.size());
-       ++i) {
-    world_max = world_max.max(static_cast<Eigen::Array3f>(
-        data.rtkernel.s.primitive_vector[i].vertex[0]));
-    world_max = world_max.max(static_cast<Eigen::Array3f>(
-        data.rtkernel.s.primitive_vector[i].vertex[1]));
-    world_max = world_max.max(static_cast<Eigen::Array3f>(
-        data.rtkernel.s.primitive_vector[i].vertex[2]));
-
-    world_min = world_min.min(static_cast<Eigen::Array3f>(
-        data.rtkernel.s.primitive_vector[i].vertex[0]));
-    world_min = world_min.min(static_cast<Eigen::Array3f>(
-        data.rtkernel.s.primitive_vector[i].vertex[1]));
-    world_min = world_min.min(static_cast<Eigen::Array3f>(
-        data.rtkernel.s.primitive_vector[i].vertex[2]));
-  }
-
-  Eigen::Vector3f world_max_v = static_cast<Eigen::Vector3f>(world_max);
-  Eigen::Vector3f world_min_v = static_cast<Eigen::Vector3f>(world_min);
-
-  float world_radius = 0.5f * (world_max_v - world_min_v).norm();
   data.rtkernel.cam.set_screen_resolution(320, 320);
   data.rtkernel.cam.set_field_of_view(0.5f * M_PI);
-  data.camera_distance =
-      2.0f * world_radius / tanf(0.5f * data.rtkernel.cam.field_of_view());
-  data.world_center = 0.5f * (world_min_v + world_max_v);
-  data.world_up = Eigen::Vector3f(0, 1, 0);
 
-  std::cout << "primitive count: " << data.rtkernel.s.primitive_vector.size()
+  data.camera_altitude = 0.0f;
+  data.camera_azimuth = 0.0f;
+  data.camera_distance = 2.0f * data.rtkernel.s.radius /
+                         tanf(0.5f * data.rtkernel.cam.field_of_view());
+
+  data.world = ray_tracer::orthonormal_frame(data.rtkernel.s.center,
+                                             Eigen::Vector3f(0, 1, 0),
+                                             Eigen::Vector3f(1, 0, 0));
+
+  std::cout << "primitive count:" << data.rtkernel.s.primitive_vector.size()
             << std::endl;
-  std::cout << "world cube min: " << world_min_v.transpose() << std::endl
-            << "world cube max: " << world_max_v.transpose() << std::endl
-            << "world center: " << data.world_center.transpose() << std::endl;
-  std::cout << "world radius: " << world_radius << std::endl;
-  std::cout << "eye distance: " << data.camera_distance << std::endl;
+  std::cout << "scene min:" << data.rtkernel.s.min.transpose() << std::endl
+            << "scene max:" << data.rtkernel.s.max.transpose() << std::endl
+            << "scene radius:" << data.rtkernel.s.radius << std::endl;
+  std::cout << "world origin:" << data.world.origin().transpose() << std::endl;
+  std::cout << "camera radius:" << data.camera_distance << std::endl;
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-  glutInitWindowPosition(100, 100);
+  // glutInitWindowPosition(100, 100);
   glutInitWindowSize(data.rtkernel.cam.pixel_cols(),
                      data.rtkernel.cam.pixel_rows());
   glutCreateWindow("spray: simulated particle ray tracer");
@@ -118,14 +84,10 @@ void render() {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  data.rtkernel.cam.look_at(
-      data.world_center +
-          data.camera_distance *
-              Eigen::Vector3f(
-                  cosf(data.camera_azimuth) * cosf(data.camera_altitude),
-                  sinf(data.camera_altitude),
-                  sinf(data.camera_azimuth) * cosf(data.camera_altitude)),
-      data.world_center, data.world_up);
+  data.rtkernel.cam.look_at(ray_tracer::horizontal_coordinates(
+                                data.world, data.camera_distance,
+                                data.camera_altitude, data.camera_azimuth),
+                            data.world.center(), data.world.up());
 
   data.rtkernel.render();
   glDrawPixels(data.rtkernel.cam.pixel_cols(), data.rtkernel.cam.pixel_rows(),
@@ -175,7 +137,7 @@ void process_mouse_move(int x, int y) {
       break;
 
     default:
-      data.camera_azimuth += static_cast<float>(x - data.old_mouse_x) * 0.01f;
+      data.camera_azimuth -= static_cast<float>(x - data.old_mouse_x) * 0.01f;
       data.camera_altitude -= static_cast<float>(y - data.old_mouse_y) * 0.01f;
       if (data.camera_altitude > M_PI_2 - 0.0001f)
         data.camera_altitude = M_PI_2 - 0.0001f;
