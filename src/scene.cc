@@ -19,14 +19,21 @@ scene load_stl(std::string file_name) {
   std::uint32_t primitive_count;
   in.read(reinterpret_cast<char*>(&primitive_count), 4);
 
-  scene result;
-  result.primitive_vector.resize(primitive_count);
+  scene s;
+  s.primitive_vector.resize(primitive_count);
+  s.vertex_vector.resize(3 * primitive_count);
 
   for (std::uint32_t i = 0; i < primitive_count; i++) {
-    in.read(reinterpret_cast<char*>(&result.primitive_vector[i].normal), 12);
-    in.read(reinterpret_cast<char*>(&result.primitive_vector[i].vertex[0]), 12);
-    in.read(reinterpret_cast<char*>(&result.primitive_vector[i].vertex[1]), 12);
-    in.read(reinterpret_cast<char*>(&result.primitive_vector[i].vertex[2]), 12);
+    in.read(reinterpret_cast<char*>(&s.primitive_vector[i].normal), 12);
+
+    in.read(reinterpret_cast<char*>(&s.vertex_vector[3 * i].position), 12);
+    in.read(reinterpret_cast<char*>(&s.vertex_vector[3 * i + 1].position), 12);
+    in.read(reinterpret_cast<char*>(&s.vertex_vector[3 * i + 2].position), 12);
+
+    s.primitive_vector[i].vertex_id[0] = 3 * i;
+    s.primitive_vector[i].vertex_id[1] = 3 * i + 1;
+    s.primitive_vector[i].vertex_id[2] = 3 * i + 2;
+
     // ignore attribute byte count
     in.ignore(2);
   }
@@ -35,29 +42,21 @@ scene load_stl(std::string file_name) {
   Eigen::Array3f tmp_max(-INFINITY, -INFINITY, -INFINITY);
   Eigen::Array3f tmp_min(INFINITY, INFINITY, INFINITY);
 
-  for (int i = 0; i < static_cast<int>(primitive_count); ++i) {
-    tmp_max = tmp_max.max(
-        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[0]));
-    tmp_max = tmp_max.max(
-        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[1]));
-    tmp_max = tmp_max.max(
-        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[2]));
+  for (int i = 0; i < static_cast<int>(s.vertex_vector.size()); ++i) {
+    tmp_max =
+        tmp_max.max(static_cast<Eigen::Array3f>(s.vertex_vector[i].position));
 
-    tmp_min = tmp_min.min(
-        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[0]));
-    tmp_min = tmp_min.min(
-        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[1]));
-    tmp_min = tmp_min.min(
-        static_cast<Eigen::Array3f>(result.primitive_vector[i].vertex[2]));
+    tmp_min =
+        tmp_min.min(static_cast<Eigen::Array3f>(s.vertex_vector[i].position));
   }
 
-  result.max = static_cast<Eigen::Vector3f>(tmp_max);
-  result.min = static_cast<Eigen::Vector3f>(tmp_min);
+  s.max = static_cast<Eigen::Vector3f>(tmp_max);
+  s.min = static_cast<Eigen::Vector3f>(tmp_min);
 
-  result.center = 0.5f * (result.max + result.min);
-  result.radius = 0.5f * (result.max - result.min).norm();
+  s.center = 0.5f * (s.max + s.min);
+  s.radius = 0.5f * (s.max - s.min).norm();
 
-  return result;
+  return s;
 }
 
 }  // namespace ray_tracer

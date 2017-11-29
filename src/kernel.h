@@ -31,9 +31,11 @@ struct kernel {
         for (int p = 0; p < static_cast<int>(s.primitive_vector.size()); ++p) {
           Eigen::Vector3f tmp_uvt;
 
-          if (intersect(r, s.primitive_vector[p].vertex[0],
-                        s.primitive_vector[p].vertex[1],
-                        s.primitive_vector[p].vertex[2], tmp_uvt)) {
+          const scene::primitive& prim = s.primitive_vector[p];
+
+          if (intersect(r, s.vertex_vector[prim.vertex_id[0]].position,
+                        s.vertex_vector[prim.vertex_id[1]].position,
+                        s.vertex_vector[prim.vertex_id[2]].position, tmp_uvt)) {
             if (tmp_uvt(2) < uvt(2)) {
               uvt = tmp_uvt;
               pid = p;

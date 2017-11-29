@@ -19,7 +19,7 @@ void init(int argc, char** argv) {
   data.rtkernel.cam.set_field_of_view(0.5f * M_PI);
   data.camera_altitude = 0.0f;
   data.camera_azimuth = 0.0f;
-  data.camera_distance = 1.0f * data.rtkernel.s.radius /
+  data.camera_distance = 1.5f * data.rtkernel.s.radius /
                          tanf(0.5f * data.rtkernel.cam.field_of_view());
   data.world = ray_tracer::blender_orthonormal_frame(data.rtkernel.s.center);
   compute_camera_frame();
@@ -189,14 +189,16 @@ void render_with_opengl() {
 
   for (int i = 0; i < static_cast<int>(data.rtkernel.s.primitive_vector.size());
        ++i) {
+    const ray_tracer::scene::primitive& p = data.rtkernel.s.primitive_vector[i];
+
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.primitive_vector[i].vertex[0].data()));
+        data.rtkernel.s.vertex_vector[p.vertex_id[0]].position.data()));
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.primitive_vector[i].vertex[1].data()));
+        data.rtkernel.s.vertex_vector[p.vertex_id[1]].position.data()));
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.primitive_vector[i].vertex[2].data()));
+        data.rtkernel.s.vertex_vector[p.vertex_id[2]].position.data()));
     glEnd();
   }
 }
