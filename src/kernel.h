@@ -12,24 +12,18 @@ struct kernel {
   std::vector<Eigen::Vector4f> accum_buffer;
   camera cam;
   scene s;
-
-  void clear() {
-    accum_buffer.resize(cam.pixel_cols() * cam.pixel_rows());
-
-    for (int i = 0; i < static_cast<int>(accum_buffer.size()); ++i) {
-      accum_buffer[i] = Eigen::Vector4f(0.0f, 0.5f, 1.0f, 1);
-    }
-  }
+  Eigen::Vector3f clear_color;
 
   void render() {
-    accum_buffer.resize(cam.pixel_cols() * cam.pixel_rows());
+    accum_buffer.resize(cam.screen_width() * cam.screen_height());
 
-    for (int i = 0; i < cam.pixel_rows(); ++i) {
-      for (int j = 0; j < cam.pixel_cols(); ++j) {
-        const int index = cam.pixel_cols() * i + j;
-        const ray r = cam.primary_ray(j, i);
-        // accum_buffer[index] = Eigen::Vector4f(0.1f, 0.1f, 0.1f, 1.0f);
-        accum_buffer[index] = Eigen::Vector4f(0.2f, 0.2f, 0.2f, 1.0f);
+#pragma omp parallel for
+    for (int i = 0; i < cam.screen_height(); ++i) {
+      for (int j = 0; j < cam.screen_width(); ++j) {
+        const int index = cam.screen_width() * i + j;
+        const ray r = primary_ray(cam, j, i);
+        accum_buffer[index] = Eigen::Vector4f(clear_color(0), clear_color(1),
+                                              clear_color(2), 1.0f);
 
         int pid = -1;
         Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);

@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include <cassert>
 #include <cmath>
+#include "orthonormal_frame.h"
 #include "ray.h"
 
 namespace spray {
@@ -13,15 +14,12 @@ class camera {
   using Vector3f = Eigen::Vector3f;
 
  public:
-  const Vector3f& position() const { return position_; }
-  const Vector3f& direction() const { return direction_; }
-  const Vector3f& up() const { return up_; }
-  const Vector3f& right() const { return right_; }
+  const Vector3f& position() const { return frame_.origin(); }
+  Vector3f direction() const { return -frame_.back(); }
+  const orthonormal_frame& frame() const { return frame_; }
   float field_of_view() const { return field_of_view_; }
-  int pixel_rows() const { return pixel_rows_; }
-  int pixel_cols() const { return pixel_cols_; }
-  int screen_width() const { return pixel_cols_; }
-  int screen_height() const { return pixel_rows_; }
+  int screen_width() const { return screen_width_; }
+  int screen_height() const { return screen_height_; }
   float pixel_size() const { return pixel_size_; }
   float aspect_ratio() const { return aspect_ratio_; }
 
@@ -29,23 +27,21 @@ class camera {
   void set_screen_resolution(int width, int height);
   void set_field_of_view(float fov);
 
-  ray primary_ray(int col, int row) const;
-
  private:
   void compute_pixel_size();
   void compute_aspect_ratio();
 
  private:
-  Vector3f position_;
-  Vector3f direction_;
-  Vector3f up_;
-  Vector3f right_;
+  orthonormal_frame frame_;
+
   float field_of_view_;
-  int pixel_rows_;
-  int pixel_cols_;
+  int screen_height_;
+  int screen_width_;
   float pixel_size_;
   float aspect_ratio_;
 };
+
+ray primary_ray(const camera& cam, int col, int row);
 
 }  // namespace ray_tracer
 }  // namespace spray
