@@ -4,6 +4,8 @@ project(spray VERSION 0.1)
 
 add_executable(spray src/main.cc src/glut_app.cc src/scene.cc src/camera.cc src/intersection.cc src/fps_meter.cc src/orthonormal_frame.cc)
 
+target_compile_definitions(spray PRIVATE _USE_MATH_DEFINES)
+
 set_property(TARGET spray PROPERTY CXX_STANDARD 14)
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)

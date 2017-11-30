@@ -4,7 +4,7 @@ namespace spray {
 namespace ray_tracer {
 
 scene load_stl(std::string file_name) {
-  std::fstream in(file_name);
+  std::fstream in(file_name, std::ios::binary | std::ios::in);
 
   if (!in.is_open()) {
     std::cerr << "File \"" << file_name << "\" could not be opened!"
