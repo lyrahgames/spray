@@ -22,7 +22,6 @@ void init(int argc, char** argv) {
   data.camera_distance = 1.5f * data.rtkernel.s.radius /
                          tanf(0.5f * data.rtkernel.cam.field_of_view());
   data.world = ray_tracer::blender_orthonormal_frame(data.rtkernel.s.center);
-  compute_camera_frame();
 
   std::cout << "primitive count: " << data.rtkernel.s.primitive_data.size()
             << std::endl;
@@ -55,6 +54,8 @@ void init(int argc, char** argv) {
   // GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  compute_camera_frame();
 }
 
 void exec() { glutMainLoop(); }
@@ -68,7 +69,7 @@ void resize(int width, int height) {
   glLoadIdentity();
   glViewport(0, 0, data.rtkernel.cam.screen_width(),
              data.rtkernel.cam.screen_height());
-  gluPerspective(data.rtkernel.cam.field_of_view() * 180 / M_PI,
+  gluPerspective(data.rtkernel.cam.vertical_field_of_view() * 180 / M_PI,
                  data.rtkernel.cam.aspect_ratio(), 0.1f, 1000.0f);
   glMatrixMode(GL_MODELVIEW);
 }
