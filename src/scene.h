@@ -23,8 +23,8 @@ struct scene {
     Eigen::Vector3f normal;
   };
 
-  std::vector<vertex> vertex_vector;
-  std::vector<primitive> primitive_vector;
+  std::vector<vertex> vertex_data;
+  std::vector<primitive> primitive_data;
 
   Eigen::Vector3f min;
   Eigen::Vector3f max;

@@ -24,7 +24,7 @@ void init(int argc, char** argv) {
   data.world = ray_tracer::blender_orthonormal_frame(data.rtkernel.s.center);
   compute_camera_frame();
 
-  std::cout << "primitive count: " << data.rtkernel.s.primitive_vector.size()
+  std::cout << "primitive count: " << data.rtkernel.s.primitive_data.size()
             << std::endl;
   std::cout << "scene min: " << data.rtkernel.s.min.transpose() << std::endl
             << "scene max: " << data.rtkernel.s.max.transpose() << std::endl
@@ -187,18 +187,18 @@ void render_with_opengl() {
                1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  for (int i = 0; i < static_cast<int>(data.rtkernel.s.primitive_vector.size());
+  for (int i = 0; i < static_cast<int>(data.rtkernel.s.primitive_data.size());
        ++i) {
-    const ray_tracer::scene::primitive& p = data.rtkernel.s.primitive_vector[i];
+    const ray_tracer::scene::primitive& p = data.rtkernel.s.primitive_data[i];
 
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.vertex_vector[p.vertex_id[0]].position.data()));
+        data.rtkernel.s.vertex_data[p.vertex_id[0]].position.data()));
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.vertex_vector[p.vertex_id[1]].position.data()));
+        data.rtkernel.s.vertex_data[p.vertex_id[1]].position.data()));
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.vertex_vector[p.vertex_id[2]].position.data()));
+        data.rtkernel.s.vertex_data[p.vertex_id[2]].position.data()));
     glEnd();
   }
 }
