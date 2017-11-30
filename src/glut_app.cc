@@ -68,7 +68,7 @@ void resize(int width, int height) {
   glLoadIdentity();
   glViewport(0, 0, data.rtkernel.cam.screen_width(),
              data.rtkernel.cam.screen_height());
-  gluPerspective(data.rtkernel.cam.field_of_view() * 180 / M_PI,
+  gluPerspective(data.rtkernel.cam.vertical_field_of_view() * 180 / M_PI,
                  data.rtkernel.cam.aspect_ratio(), 0.1f, 1000.0f);
   glMatrixMode(GL_MODELVIEW);
 }

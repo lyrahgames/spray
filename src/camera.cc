@@ -3,6 +3,10 @@
 namespace spray {
 namespace ray_tracer {
 
+float camera::vertical_field_of_view() const {
+  return 2.0 * atanf(tanf(field_of_view_ * 0.5f) / aspect_ratio_);
+}
+
 void camera::look_at(const Eigen::Vector3f& eye, const Eigen::Vector3f& center,
                      const Eigen::Vector3f& up) {
   frame_ = orthonormal_frame(eye, eye - center, up);
