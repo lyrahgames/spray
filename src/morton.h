@@ -31,10 +31,12 @@ inline uint32_t shift3(uint32_t x) {
   return x;
 }
 
-inline uint32_t encode2(uint32_t x, uint32_t y) { return (y << 1) | x; }
+inline uint32_t encode2(uint32_t x, uint32_t y) {
+  return (shift2(y) << 1) | shift2(x);
+}
 
 inline uint32_t encode3(uint32_t x, uint32_t y, uint32_t z) {
-  return (z << 2) | (y << 1) | x;
+  return (shift3(z) << 2) | (shift3(y) << 1) | shift3(x);
 }
 
 template <typename T>
