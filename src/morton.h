@@ -39,6 +39,10 @@ inline uint32_t encode3(uint32_t x, uint32_t y, uint32_t z) {
   return (shift3(z) << 2) | (shift3(y) << 1) | shift3(x);
 }
 
+inline uint32_t encode(uint32_t x, uint32_t y, uint32_t z) {
+  return (shift3(z) << 2) | (shift3(y) << 1) | shift3(x);
+}
+
 template <typename T>
 inline void radix_sort(std::vector<primitive<T>> &v) {
   std::vector<primitive<T>> tmp(v.size());
@@ -49,7 +53,7 @@ inline void radix_sort(std::vector<primitive<T>> &v) {
   for (int pass = 0; pass < pass_count; ++pass) {
     const int low_bit = pass * bits_per_pass;
     std::vector<primitive<T>> &in = (pass & 1) ? (tmp) : (v);
-    std::vector<primitive<T>> &out = (pass & 1) ? (tmp) : (v);
+    std::vector<primitive<T>> &out = (pass & 1) ? (v) : (tmp);
 
     constexpr int bucket_count = 1 << bits_per_pass;
     int bucket[bucket_count] = {0};

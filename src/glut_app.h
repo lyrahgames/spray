@@ -12,6 +12,7 @@
 #include <GL/glut.h>
 #endif
 
+#include "aabb.h"
 #include "fps_meter.h"
 #include "kernel.h"
 #include "orthonormal_frame.h"
@@ -30,6 +31,7 @@ struct state {
   int old_mouse_x;
   int old_mouse_y;
   ray_tracer::kernel rtkernel;
+  std::vector<Eigen::Vector3f> pixel_buffer;
   fps_meter fpsm;
   ray_tracer::orthonormal_frame world;
   float camera_distance;

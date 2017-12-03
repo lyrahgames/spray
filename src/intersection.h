@@ -16,6 +16,7 @@ bool intersect(const ray& r, const Eigen::Vector3f& vertex0,
                Eigen::Vector3f& uvt);
 
 bool intersect(const ray& r, const aabb& box);
+bool intersect(const ray& r, const aabb& box, float& t);
 
 }  // namespace ray_tracer
 }  // namespace spray

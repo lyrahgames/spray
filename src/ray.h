@@ -9,6 +9,8 @@ namespace ray_tracer {
 struct ray {
   Eigen::Vector3f origin;
   Eigen::Vector3f direction;
+
+  Eigen::Vector3f operator()(float t) { return origin + t * direction; }
 };
 
 }  // namespace ray_tracer

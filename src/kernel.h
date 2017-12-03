@@ -1,6 +1,8 @@
 #ifndef SPRAY_KERNEL_H_
 #define SPRAY_KERNEL_H_
 
+#include "aabb.h"
+#include "binary_bvh.h"
 #include "camera.h"
 #include "intersection.h"
 #include "scene.h"
@@ -8,16 +10,26 @@
 namespace spray {
 namespace ray_tracer {
 
+std::vector<Eigen::Vector3f> render(const scene& s, const camera& cam);
+std::vector<Eigen::Vector3f> render(const binary_bvh& bvh, const camera& cam);
+void traverse(const binary_bvh& bvh, const ray& r, int& pid,
+              Eigen::Vector3f& uvt);
+void traverse_node(const binary_bvh& bvh, const ray& r, int node_index,
+                   int& pid, Eigen::Vector3f& uvt);
+
 struct kernel {
   std::vector<Eigen::Vector4f> accum_buffer;
   camera cam;
   scene s;
+  // bvh tree;
   Eigen::Vector3f clear_color;
+  binary_bvh tree;
 
   void render() {
     accum_buffer.resize(cam.screen_width() * cam.screen_height());
 
-    const aabb box(s.min, s.max);
+    // const aabb box(s.min, s.max);
+    const aabb box = bounds(s);
 
 #pragma omp parallel for
     for (int i = 0; i < cam.screen_height(); ++i) {

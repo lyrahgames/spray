@@ -35,15 +35,32 @@ bool intersect(const ray& r, const aabb& box) {
   const Eigen::Array3f inverse_direction =
       static_cast<Eigen::Array3f>(r.direction).inverse();
   const Eigen::Array3f t1_vector =
-      static_cast<Eigen::Array3f>(box.min() - r.origin) * inverse_direction;
+      static_cast<Eigen::Array3f>(box.min - r.origin) * inverse_direction;
   const Eigen::Array3f t2_vector =
-      static_cast<Eigen::Array3f>(box.max() - r.origin) * inverse_direction;
+      static_cast<Eigen::Array3f>(box.max - r.origin) * inverse_direction;
   const Eigen::Vector3f t_min_vector =
       static_cast<Eigen::Vector3f>(t1_vector.min(t2_vector));
   const Eigen::Vector3f t_max_vector =
       static_cast<Eigen::Vector3f>(t1_vector.max(t2_vector));
 
   return t_min_vector.maxCoeff() < t_max_vector.minCoeff();
+}
+
+bool intersect(const ray& r, const aabb& box, float& t) {
+  const Eigen::Array3f inverse_direction =
+      static_cast<Eigen::Array3f>(r.direction).inverse();
+  const Eigen::Array3f t1_vector =
+      static_cast<Eigen::Array3f>(box.min - r.origin) * inverse_direction;
+  const Eigen::Array3f t2_vector =
+      static_cast<Eigen::Array3f>(box.max - r.origin) * inverse_direction;
+  const Eigen::Vector3f t_min_vector =
+      static_cast<Eigen::Vector3f>(t1_vector.min(t2_vector));
+  const Eigen::Vector3f t_max_vector =
+      static_cast<Eigen::Vector3f>(t1_vector.max(t2_vector));
+
+  t = t_min_vector.maxCoeff();
+
+  return t < t_max_vector.minCoeff();
 }
 
 }  // namespace ray_tracer

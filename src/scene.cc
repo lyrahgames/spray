@@ -3,6 +3,17 @@
 namespace spray {
 namespace ray_tracer {
 
+aabb bounds(const scene& s) {
+  aabb box{Eigen::Vector3f(INFINITY, INFINITY, INFINITY),
+           Eigen::Vector3f(-INFINITY, -INFINITY, -INFINITY)};
+
+  for (size_t i = 0; i < s.vertex_data.size(); ++i) {
+    box = bounds(box, s.vertex_data[i].position);
+  }
+
+  return box;
+}
+
 scene load_stl(std::string file_name) {
   std::fstream in(file_name, std::ios::binary | std::ios::in);
 
@@ -26,7 +37,7 @@ scene load_stl(std::string file_name) {
   for (std::uint32_t i = 0; i < primitive_count; i++) {
     in.read(reinterpret_cast<char*>(&s.primitive_data[i].normal), 12);
 
-    in.read(reinterpret_cast<char*>(&s.vertex_data[3 * i].position), 12);
+    in.read(reinterpret_cast<char*>(&s.vertex_data[3 * i + 0].position), 12);
     in.read(reinterpret_cast<char*>(&s.vertex_data[3 * i + 1].position), 12);
     in.read(reinterpret_cast<char*>(&s.vertex_data[3 * i + 2].position), 12);
 
@@ -37,24 +48,6 @@ scene load_stl(std::string file_name) {
     // ignore attribute byte count
     in.ignore(2);
   }
-
-  // compute bounds and parameters
-  Eigen::Array3f tmp_max(-INFINITY, -INFINITY, -INFINITY);
-  Eigen::Array3f tmp_min(INFINITY, INFINITY, INFINITY);
-
-  for (int i = 0; i < static_cast<int>(s.vertex_data.size()); ++i) {
-    tmp_max =
-        tmp_max.max(static_cast<Eigen::Array3f>(s.vertex_data[i].position));
-
-    tmp_min =
-        tmp_min.min(static_cast<Eigen::Array3f>(s.vertex_data[i].position));
-  }
-
-  s.max = static_cast<Eigen::Vector3f>(tmp_max);
-  s.min = static_cast<Eigen::Vector3f>(tmp_min);
-
-  s.center = 0.5f * (s.max + s.min);
-  s.radius = 0.5f * (s.max - s.min).norm();
 
   return s;
 }

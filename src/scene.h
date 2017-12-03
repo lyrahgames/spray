@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "aabb.h"
 
 namespace spray {
 namespace ray_tracer {
@@ -25,12 +26,9 @@ struct scene {
 
   std::vector<vertex> vertex_data;
   std::vector<primitive> primitive_data;
-
-  Eigen::Vector3f min;
-  Eigen::Vector3f max;
-  Eigen::Vector3f center;
-  float radius;
 };
+
+aabb bounds(const scene& s);
 
 scene load_stl(std::string file_name);
 
