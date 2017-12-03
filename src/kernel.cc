@@ -3,8 +3,10 @@
 namespace spray {
 namespace ray_tracer {
 
-std::vector<Eigen::Vector3f> render(const scene& s, const camera& cam) {
-  std::vector<Eigen::Vector3f> buffer(cam.screen_width() * cam.screen_height());
+void kernel::render() {
+  accum_buffer.resize(cam.screen_width() * cam.screen_height());
+
+  // const aabb box(s.min, s.max);
   const aabb box = bounds(s);
 
 #pragma omp parallel for
@@ -12,7 +14,8 @@ std::vector<Eigen::Vector3f> render(const scene& s, const camera& cam) {
     for (int j = 0; j < cam.screen_width(); ++j) {
       const int index = cam.screen_width() * i + j;
       const ray r = primary_ray(cam, j, i);
-      buffer[index] = Eigen::Vector3f(0, 0, 0);
+      accum_buffer[index] =
+          Eigen::Vector4f(clear_color(0), clear_color(1), clear_color(2), 1.0f);
 
       if (intersect(r, box)) {
         int pid = -1;
@@ -36,67 +39,58 @@ std::vector<Eigen::Vector3f> render(const scene& s, const camera& cam) {
         if (pid != -1) {
           float dot = -r.direction.dot(s.primitive_data[pid].normal);
           if (dot < 0.0f) dot = 0.0f;
-          buffer[index] = Eigen::Vector3f(dot, dot, dot);
+          accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1.0f);
         }
       }
     }
   }
-
-  return buffer;
 }
 
-std::vector<Eigen::Vector3f> render(const binary_bvh& bvh, const camera& cam) {
-  std::vector<Eigen::Vector3f> buffer(cam.screen_width() * cam.screen_height());
-  const aabb box = bounds(*bvh.mesh);
+void kernel::render_bvh() {
+  accum_buffer.resize(cam.screen_width() * cam.screen_height());
 
 #pragma omp parallel for
   for (int i = 0; i < cam.screen_height(); ++i) {
     for (int j = 0; j < cam.screen_width(); ++j) {
       const int index = cam.screen_width() * i + j;
       const ray r = primary_ray(cam, j, i);
-      buffer[index] = Eigen::Vector3f(0, 0, 0);
+      accum_buffer[index] = Eigen::Vector4f(0, 0, 0, 1);
 
       int pid = -1;
       Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
 
-      traverse(bvh, r, pid, uvt);
+      traverse(r, &pid, &uvt);
 
       if (pid != -1) {
         const float dot =
-            std::abs(-r.direction.dot(bvh.mesh->primitive_data[pid].normal));
-        // if (dot < 0.0f) dot = 0.0f;
-        buffer[index] = Eigen::Vector3f(dot, dot, dot);
+            std::abs(-r.direction.dot(s.primitive_data[pid].normal));
+        accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1);
       }
     }
   }
-
-  return buffer;
 }
 
-void traverse(const binary_bvh& bvh, const ray& r, int& pid,
-              Eigen::Vector3f& uvt) {
-  traverse_node(bvh, r, 0, pid, uvt);
+void kernel::traverse(const ray& r, int* pid, Eigen::Vector3f* uvt) {
+  traverse_node(r, 0, pid, uvt);
 }
 
-void traverse_node(const binary_bvh& bvh, const ray& r, int node_index,
-                   int& pid, Eigen::Vector3f& uvt) {
-  if (bvh.node_data[node_index].is_leaf()) {
-    if (intersect(r, bvh.node_data[node_index].box)) {
-      const int offset = bvh.node_data[node_index].offset;
-      const int count = bvh.node_data[node_index].count;
+void kernel::traverse_node(const ray& r, int node_index, int* pid,
+                           Eigen::Vector3f* uvt) {
+  if (scene::binary_bvh::is_leaf(s.bvh.node_data[node_index])) {
+    if (intersect(r, s.bvh.node_data[node_index].box)) {
+      const int offset = s.bvh.node_data[node_index].offset;
+      const int count = s.bvh.node_data[node_index].count;
 
       for (int p = offset; p < offset + count; ++p) {
         Eigen::Vector3f tmp_uvt(0.0f, 0.0f, INFINITY);
-        const scene::primitive& prim =
-            bvh.mesh->primitive_data[bvh.morton_data[p].data];
+        const scene::primitive& prim = s.primitive_data[p];
 
-        if (intersect(r, bvh.mesh->vertex_data[prim.vertex_id[0]].position,
-                      bvh.mesh->vertex_data[prim.vertex_id[1]].position,
-                      bvh.mesh->vertex_data[prim.vertex_id[2]].position,
-                      tmp_uvt)) {
-          if (tmp_uvt(2) < uvt(2)) {
-            uvt = tmp_uvt;
-            pid = bvh.morton_data[p].data;
+        if (intersect(r, s.vertex_data[prim.vertex_id[0]].position,
+                      s.vertex_data[prim.vertex_id[1]].position,
+                      s.vertex_data[prim.vertex_id[2]].position, tmp_uvt)) {
+          if (tmp_uvt(2) < (*uvt)(2)) {
+            *uvt = tmp_uvt;
+            *pid = p;
           }
         }
       }
@@ -105,9 +99,9 @@ void traverse_node(const binary_bvh& bvh, const ray& r, int node_index,
     return;
   }
 
-  if (intersect(r, bvh.node_data[node_index].box)) {
-    traverse_node(bvh, r, bvh.node_data[node_index].child[0], pid, uvt);
-    traverse_node(bvh, r, bvh.node_data[node_index].child[1], pid, uvt);
+  if (intersect(r, s.bvh.node_data[node_index].box)) {
+    traverse_node(r, s.bvh.node_data[node_index].child[0], pid, uvt);
+    traverse_node(r, s.bvh.node_data[node_index].child[1], pid, uvt);
   }
 }
 

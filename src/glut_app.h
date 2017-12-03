@@ -31,7 +31,6 @@ struct state {
   int old_mouse_x;
   int old_mouse_y;
   ray_tracer::kernel rtkernel;
-  std::vector<Eigen::Vector3f> pixel_buffer;
   fps_meter fpsm;
   ray_tracer::orthonormal_frame world;
   float camera_distance;

@@ -11,6 +11,7 @@ void init(int argc, char** argv) {
     exit(0);
   }
   data.rtkernel.s = ray_tracer::load_stl(argv[1]);
+  data.rtkernel.s.build_morton_bvh();
 
   ray_tracer::aabb bounding_box = ray_tracer::bounds(data.rtkernel.s);
   // data.rtkernel.tree = build(data.rtkernel.s);
@@ -61,7 +62,6 @@ void init(int argc, char** argv) {
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   compute_camera_frame();
-  build(data.rtkernel.s, data.rtkernel.tree);
 }
 
 void exec() { glutMainLoop(); }
@@ -181,16 +181,12 @@ void compute_camera_frame() {
 }
 
 void render_with_ray_tracer() {
-  // data.rtkernel.clear_color = data.clear_color;
+  data.rtkernel.clear_color = data.clear_color;
   // data.rtkernel.render();
-  // data.pixel_buffer = ray_tracer::render(data.rtkernel.s, data.rtkernel.cam);
-  data.pixel_buffer = ray_tracer::render(data.rtkernel.tree, data.rtkernel.cam);
-  // glDrawPixels(data.rtkernel.cam.screen_width(),
-  //              data.rtkernel.cam.screen_height(), GL_RGBA, GL_FLOAT,
-  //              data.rtkernel.accum_buffer.data());
+  data.rtkernel.render_bvh();
   glDrawPixels(data.rtkernel.cam.screen_width(),
-               data.rtkernel.cam.screen_height(), GL_RGB, GL_FLOAT,
-               data.pixel_buffer.data());
+               data.rtkernel.cam.screen_height(), GL_RGBA, GL_FLOAT,
+               data.rtkernel.accum_buffer.data());
 }
 
 void render_with_opengl() {
