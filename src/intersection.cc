@@ -43,7 +43,7 @@ bool intersect(const ray& r, const aabb& box) {
   const Eigen::Vector3f t_max_vector =
       static_cast<Eigen::Vector3f>(t1_vector.max(t2_vector));
 
-  return t_min_vector.maxCoeff() < t_max_vector.minCoeff();
+  return t_min_vector.maxCoeff() <= t_max_vector.minCoeff();
 }
 
 bool intersect(const ray& r, const aabb& box, float& t) {
@@ -60,7 +60,7 @@ bool intersect(const ray& r, const aabb& box, float& t) {
 
   t = t_min_vector.maxCoeff();
 
-  return t < t_max_vector.minCoeff();
+  return t <= t_max_vector.minCoeff();
 }
 
 }  // namespace ray_tracer
