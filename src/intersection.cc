@@ -10,6 +10,8 @@ bool intersect(const ray& r, const Eigen::Vector3f& vertex0,
   const Eigen::Vector3f edge2 = vertex2 - vertex0;
   const Eigen::Vector3f p_vector = r.direction.cross(edge2);
   const float determinant = edge1.dot(p_vector);
+  // const float normalized_determinant =
+  //     determinant / (edge1.norm() * edge2.norm());
 
   // if (determinant > -intersection_epsilon && determinant <
   // intersection_epsilon)
@@ -30,9 +32,11 @@ bool intersect(const ray& r, const Eigen::Vector3f& vertex0,
   uvt(2) = edge2.dot(q_vector) * inverse_determinant;
 
   // return uvt(2) > 0.0f;
-  return (determinant <= -intersection_epsilon ||
-          determinant >= intersection_epsilon) &&
-         (uvt(0) >= 0.0f && uvt(0) <= 1.0f) &&
+  // return (normalized_determinant <= -intersection_epsilon ||
+  //         normalized_determinant >= intersection_epsilon) &&
+  //        (uvt(0) >= 0.0f && uvt(0) <= 1.0f) &&
+  //        (uvt(1) >= 0.0f && uvt(0) + uvt(1) <= 1.0f) && (uvt(2) > 0.0f);
+  return (0.0f != determinant) && (uvt(0) >= 0.0f && uvt(0) <= 1.0f) &&
          (uvt(1) >= 0.0f && uvt(0) + uvt(1) <= 1.0f) && (uvt(2) > 0.0f);
 }
 
