@@ -141,8 +141,9 @@ void process_mouse_buttons(int button, int button_state, int x, int y) {
 void process_mouse_move(int x, int y) {
   switch (data.key_modifiers) {
     case GLUT_ACTIVE_CTRL:
-      data.camera_distance += static_cast<float>(y - data.old_mouse_y) * 0.1f;
-      if (data.camera_distance < 0.0f) data.camera_distance = 0.0f;
+      data.camera_distance += static_cast<float>(y - data.old_mouse_y) * 0.02f *
+                              (data.camera_distance + 0.001f);
+      if (data.camera_distance < 0.00001f) data.camera_distance = 0.00001f;
       break;
 
     default:
