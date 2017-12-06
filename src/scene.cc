@@ -156,6 +156,16 @@ scene load_stl(const std::string& file_name) {
 
     // ignore attribute byte count
     in.ignore(2);
+
+    // test if the normal is near zero and compute if this is the case
+    if (s.primitive_data[i].normal.norm() <= 0.1f) {
+      s.primitive_data[i].normal =
+          (s.vertex_data[3 * i + 1].position -
+           s.vertex_data[3 * i + 0].position)
+              .cross(s.vertex_data[3 * i + 2].position -
+                     s.vertex_data[3 * i + 0].position);
+      s.primitive_data[i].normal.normalize();
+    }
   }
 
   return s;

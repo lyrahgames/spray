@@ -36,12 +36,15 @@ void camera::compute_aspect_ratio() {
 }
 
 ray primary_ray(const camera& cam, int col, int row) {
-  return ray{cam.position(),
-             cam.direction() +
-                 static_cast<float>(col - cam.screen_width() / 2) *
-                     cam.pixel_size() * cam.frame().right() +
-                 static_cast<float>(row - cam.screen_height() / 2) *
-                     cam.pixel_size() * cam.frame().up()};
+  ray r{cam.position(),
+        cam.direction() +
+            static_cast<float>(col - cam.screen_width() / 2) *
+                cam.pixel_size() * cam.frame().right() +
+            static_cast<float>(row - cam.screen_height() / 2) *
+                cam.pixel_size() * cam.frame().up()};
+
+  r.direction.normalize();
+  return r;
 }
 
 }  // namespace ray_tracer
