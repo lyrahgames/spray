@@ -4,7 +4,7 @@ namespace spray {
 namespace glut_app {
 
 state data{};
-ray_tracer::kernel kernel{};
+ray_tracer::kernel kernel;
 
 void init(int argc, char** argv) {
   if (argc != 2) {
@@ -22,6 +22,8 @@ void init(int argc, char** argv) {
   data.fps_meter = chrono::fps_meter(3.0f);
   kernel.cam.set_screen_resolution(320, 320);
   kernel.cam.set_field_of_view(0.5f * M_PI);
+  kernel.rng = std::mt19937(std::random_device{}());
+  kernel.reset();
   data.eye_altitude = 0.0f;
   data.eye_azimuth = 0.0f;
   const float scene_radius = ray_tracer::radius(bounding_box);
@@ -72,6 +74,8 @@ void close() {}
 
 void resize(int width, int height) {
   kernel.cam.set_screen_resolution(width, height);
+  // kernel.reset();
+  compute_camera_frame();
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -189,6 +193,8 @@ void compute_camera_frame() {
       ray_tracer::horizontal_coordinates(data.world, data.eye_distance,
                                          data.eye_altitude, data.eye_azimuth),
       data.world.origin(), data.world.up());
+  kernel.cam.set_horizontal_field_of_view(M_PI_2);
+  kernel.reset();
 
   glLoadIdentity();
   gluLookAt(kernel.cam.position()(0), kernel.cam.position()(1),

@@ -34,6 +34,12 @@ void camera::set_field_of_view(float fov) {
   compute_pixel_size();
 }
 
+void camera::set_horizontal_field_of_view(float fov) {
+  if (fov <= 0.0f || fov >= static_cast<float>(M_PI)) return;
+  const float vfov = 2.0 * std::atan(std::tan(fov * 0.5f) / aspect_ratio_);
+  set_field_of_view(vfov);
+}
+
 void camera::compute_pixel_size() {
   // pixel_size_ =
   //     2.0f * tanf(field_of_view_ * 0.5f) / static_cast<float>(screen_width_);
@@ -57,6 +63,24 @@ ray primary_ray(const camera& cam, int col, int row) {
                   0.5f * static_cast<float>(cam.screen_height()) + 0.5f) *
                      cam.frame().up())};
 
+  r.direction.normalize();
+  return r;
+}
+
+ray jittered_primary_ray(const camera& cam, int col, int row,
+                         std::mt19937& rng) {
+  std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+  ray r{
+      cam.position(),
+      cam.direction() +
+          cam.pixel_size() * ((static_cast<float>(col) -
+                               0.5f * static_cast<float>(cam.screen_width()) +
+                               distribution(rng)) *
+                                  cam.frame().right() +
+                              (static_cast<float>(row) -
+                               0.5f * static_cast<float>(cam.screen_height()) +
+                               distribution(rng)) *
+                                  cam.frame().up())};
   r.direction.normalize();
   return r;
 }

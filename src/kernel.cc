@@ -3,6 +3,13 @@
 namespace spray {
 namespace ray_tracer {
 
+void kernel::reset() {
+  sample_count = 0;
+  accum_buffer.resize(cam.screen_width() * cam.screen_height());
+  accum_buffer.assign(accum_buffer.size(),
+                      Eigen::Vector4f(0.0f, 0.0f, 0.0f, 0.0f));
+}
+
 void kernel::render() {
   accum_buffer.resize(cam.screen_width() * cam.screen_height());
 
@@ -47,16 +54,19 @@ void kernel::render() {
 }
 
 void kernel::render_bvh() {
-  accum_buffer.resize(cam.screen_width() * cam.screen_height());
+  // accum_buffer.resize(cam.screen_width() * cam.screen_height());
+
+  ++sample_count;
 
 #pragma omp parallel for
   for (int i = 0; i < cam.screen_height(); ++i) {
     for (int j = 0; j < cam.screen_width(); ++j) {
       const int index = cam.screen_width() * i + j;
-      const ray r = primary_ray(cam, j, i);
+      // const ray r = primary_ray(cam, j, i);
+      const ray r = jittered_primary_ray(cam, j, i, rng);
       const cached_ray traversal_ray(r);
-      accum_buffer[index] =
-          Eigen::Vector4f(clear_color(0), clear_color(1), clear_color(2), 1.0f);
+      Eigen::Vector4f color(clear_color(0), clear_color(1), clear_color(2),
+                            1.0f);
 
       int pid = -1;
       Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
@@ -67,8 +77,12 @@ void kernel::render_bvh() {
       if (pid != -1) {
         const float dot =
             std::abs(-r.direction.dot(s.primitive_data[pid].normal));
-        accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1);
+        color = Eigen::Vector4f(dot, dot, dot, 1);
       }
+
+      accum_buffer[index] =
+          (static_cast<float>(sample_count - 1) * accum_buffer[index] + color) /
+          static_cast<float>(sample_count);
     }
   }
 }
