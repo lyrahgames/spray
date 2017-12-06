@@ -26,6 +26,14 @@ constexpr unsigned char glut_key_b = 98;
 constexpr unsigned char glut_key_g = 103;
 constexpr unsigned char glut_key_w = 119;
 
+constexpr float eye_azimuth_key_inc = 0.1f;
+constexpr float eye_azimuth_inc_scale = 0.01f;
+constexpr float eye_altitude_key_inc = 0.1f;
+constexpr float eye_altitude_inc_scale = 0.01f;
+constexpr float eye_altitude_max_abs = M_PI_2 - 0.0001f;
+constexpr float eye_distance_inc_scale = 0.02f;
+constexpr float eye_distance_min = 0.00001f;
+
 struct state {
   int key_modifiers;
   int old_mouse_x;
@@ -35,7 +43,7 @@ struct state {
   float eye_altitude;
   float eye_azimuth;
   bool opengl_rendering;
-  Eigen::Vector3f clear_color;
+  Eigen::Vector3f clear_color{0.0f, 0.0f, 0.0f};
   chrono::fps_meter fps_meter;
 };
 

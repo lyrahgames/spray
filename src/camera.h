@@ -42,6 +42,7 @@ class camera {
   float aspect_ratio_;
 };
 
+// col in right direction; row in up direction
 ray primary_ray(const camera& cam, int col, int row);
 
 }  // namespace ray_tracer

@@ -38,10 +38,13 @@ void camera::compute_aspect_ratio() {
 ray primary_ray(const camera& cam, int col, int row) {
   ray r{cam.position(),
         cam.direction() +
-            static_cast<float>(col - cam.screen_width() / 2) *
-                cam.pixel_size() * cam.frame().right() +
-            static_cast<float>(row - cam.screen_height() / 2) *
-                cam.pixel_size() * cam.frame().up()};
+            cam.pixel_size() *
+                ((static_cast<float>(col) -
+                  0.5f * static_cast<float>(cam.screen_width()) + 0.5f) *
+                     cam.frame().right() +
+                 (static_cast<float>(row) -
+                  0.5f * static_cast<float>(cam.screen_height()) + 0.5f) *
+                     cam.frame().up())};
 
   r.direction.normalize();
   return r;

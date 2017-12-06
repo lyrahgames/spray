@@ -24,13 +24,15 @@ void init(int argc, char** argv) {
   kernel.cam.set_field_of_view(0.5f * M_PI);
   data.eye_altitude = 0.0f;
   data.eye_azimuth = 0.0f;
-  data.eye_distance = 1.5f * ray_tracer::radius(bounding_box) /
-                      tanf(0.5f * kernel.cam.field_of_view());
+  const float scene_radius = ray_tracer::radius(bounding_box);
+  data.eye_distance =
+      scene_radius / std::sin(0.5f * kernel.cam.field_of_view());
   data.world =
       ray_tracer::blender_orthonormal_frame(ray_tracer::center(bounding_box));
 
   std::cout << "primitive count: " << kernel.s.primitive_data.size()
             << std::endl;
+  std::cout << "bvh node count: " << kernel.s.bvh.node_data.size() << std::endl;
   std::cout << "scene min: " << bounding_box.min.transpose() << std::endl
             << "scene max: " << bounding_box.max.transpose() << std::endl
             << "scene radius: " << ray_tracer::radius(bounding_box)
@@ -117,16 +119,16 @@ void process_normal_keys(unsigned char key, int x, int y) {
 void process_special_keys(int key, int x, int y) {
   switch (key) {
     case GLUT_KEY_LEFT:
-      data.eye_azimuth += 0.1f;
+      data.eye_azimuth += eye_azimuth_key_inc;
       break;
     case GLUT_KEY_RIGHT:
-      data.eye_azimuth -= 0.1f;
+      data.eye_azimuth -= eye_azimuth_key_inc;
       break;
     case GLUT_KEY_UP:
-      data.eye_altitude += 0.1f;
+      data.eye_altitude += eye_altitude_key_inc;
       break;
     case GLUT_KEY_DOWN:
-      data.eye_altitude -= 0.1f;
+      data.eye_altitude -= eye_altitude_key_inc;
       break;
   }
   compute_camera_frame();
@@ -142,11 +144,15 @@ void process_mouse_move(int x, int y) {
   const float y_difference = static_cast<float>(y - data.old_mouse_y);
 
   switch (data.key_modifiers) {
+    // zooming
     case GLUT_ACTIVE_CTRL:
-      data.eye_distance += y_difference * 0.02f * (data.eye_distance + 0.001f);
-      if (data.eye_distance < 0.00001f) data.eye_distance = 0.00001f;
+      data.eye_distance +=
+          eye_distance_inc_scale * y_difference * data.eye_distance;
+      if (data.eye_distance < eye_distance_min)
+        data.eye_distance = eye_distance_min;
       break;
 
+    // moving
     case GLUT_ACTIVE_SHIFT:
       data.world.set_origin(data.world.origin() -
                             kernel.cam.frame().right() * x_difference *
@@ -155,13 +161,14 @@ void process_mouse_move(int x, int y) {
                                 kernel.cam.pixel_size() * data.eye_distance);
       break;
 
+    // rotating
     default:
-      data.eye_azimuth -= x_difference * 0.01f;
-      data.eye_altitude += y_difference * 0.01f;
-      if (data.eye_altitude > M_PI_2 - 0.0001f)
-        data.eye_altitude = M_PI_2 - 0.0001f;
-      if (data.eye_altitude < -M_PI_2 + 0.0001f)
-        data.eye_altitude = -M_PI_2 + 0.0001f;
+      data.eye_azimuth -= x_difference * eye_azimuth_inc_scale;
+      data.eye_altitude += y_difference * eye_altitude_inc_scale;
+      if (data.eye_altitude > eye_altitude_max_abs)
+        data.eye_altitude = eye_altitude_max_abs;
+      if (data.eye_altitude < -eye_altitude_max_abs)
+        data.eye_altitude = -eye_altitude_max_abs;
   }
 
   compute_camera_frame();
