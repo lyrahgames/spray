@@ -139,16 +139,28 @@ void process_mouse_buttons(int button, int button_state, int x, int y) {
 }
 
 void process_mouse_move(int x, int y) {
+  const float x_difference = static_cast<float>(x - data.old_mouse_x);
+  const float y_difference = static_cast<float>(y - data.old_mouse_y);
+
   switch (data.key_modifiers) {
     case GLUT_ACTIVE_CTRL:
-      data.camera_distance += static_cast<float>(y - data.old_mouse_y) * 0.02f *
-                              (data.camera_distance + 0.001f);
+      data.camera_distance +=
+          y_difference * 0.02f * (data.camera_distance + 0.001f);
       if (data.camera_distance < 0.00001f) data.camera_distance = 0.00001f;
       break;
 
+    case GLUT_ACTIVE_SHIFT:
+      data.world.set_origin(
+          data.world.origin() -
+          data.rtkernel.cam.frame().right() * x_difference *
+              data.rtkernel.cam.pixel_size() * data.camera_distance +
+          data.rtkernel.cam.frame().up() * y_difference *
+              data.rtkernel.cam.pixel_size() * data.camera_distance);
+      break;
+
     default:
-      data.camera_azimuth -= static_cast<float>(x - data.old_mouse_x) * 0.01f;
-      data.camera_altitude += static_cast<float>(y - data.old_mouse_y) * 0.01f;
+      data.camera_azimuth -= x_difference * 0.01f;
+      data.camera_altitude += y_difference * 0.01f;
       if (data.camera_altitude > M_PI_2 - 0.0001f)
         data.camera_altitude = M_PI_2 - 0.0001f;
       if (data.camera_altitude < -M_PI_2 + 0.0001f)
