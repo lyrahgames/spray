@@ -4,7 +4,16 @@ namespace spray {
 namespace ray_tracer {
 
 float camera::vertical_field_of_view() const {
-  return 2.0 * atanf(tanf(field_of_view_ * 0.5f) / aspect_ratio_);
+  // return 2.0 * atanf(tanf(field_of_view_ * 0.5f) / aspect_ratio_);
+  return field_of_view_;
+}
+
+float camera::horizontal_field_of_view() const {
+  return 2.0 * std::atan(std::tan(field_of_view_ * 0.5f) * aspect_ratio_);
+}
+
+float camera::opengl_field_of_view() const {
+  return field_of_view_ * 180 / M_PI;
 }
 
 void camera::look_at(const Eigen::Vector3f& eye, const Eigen::Vector3f& center,
@@ -26,8 +35,10 @@ void camera::set_field_of_view(float fov) {
 }
 
 void camera::compute_pixel_size() {
-  pixel_size_ =
-      2.0f * tanf(field_of_view_ * 0.5f) / static_cast<float>(screen_width_);
+  // pixel_size_ =
+  //     2.0f * tanf(field_of_view_ * 0.5f) / static_cast<float>(screen_width_);
+  pixel_size_ = 2.0f * std::tan(field_of_view_ * 0.5f) /
+                static_cast<float>(screen_height_);
 }
 
 void camera::compute_aspect_ratio() {

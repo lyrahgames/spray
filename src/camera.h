@@ -19,6 +19,8 @@ class camera {
   const orthonormal_frame& frame() const { return frame_; }
   float field_of_view() const { return field_of_view_; }
   float vertical_field_of_view() const;
+  float horizontal_field_of_view() const;
+  float opengl_field_of_view() const;
   int screen_width() const { return screen_width_; }
   int screen_height() const { return screen_height_; }
   float pixel_size() const { return pixel_size_; }
