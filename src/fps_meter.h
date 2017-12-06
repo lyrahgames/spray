@@ -5,6 +5,7 @@
 #include <iostream>
 
 namespace spray {
+namespace chrono {
 
 class fps_meter {
  public:
@@ -26,6 +27,7 @@ class fps_meter {
   float frame_time_;
 };
 
+}  // namespace chrono
 }  // namespace spray
 
 #endif  // SPRAY_FPS_METER_H_

@@ -30,17 +30,17 @@ struct state {
   int key_modifiers;
   int old_mouse_x;
   int old_mouse_y;
-  ray_tracer::kernel rtkernel;
-  fps_meter fpsm;
   ray_tracer::orthonormal_frame world;
-  float camera_distance;
-  float camera_altitude;
-  float camera_azimuth;
+  float eye_distance;
+  float eye_altitude;
+  float eye_azimuth;
   bool opengl_rendering;
   Eigen::Vector3f clear_color;
+  chrono::fps_meter fps_meter;
 };
 
 extern state data;
+extern ray_tracer::kernel kernel;
 
 void init(int argc, char** argv);
 void exec();

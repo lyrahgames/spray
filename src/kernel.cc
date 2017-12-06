@@ -55,7 +55,8 @@ void kernel::render_bvh() {
       const int index = cam.screen_width() * i + j;
       const ray r = primary_ray(cam, j, i);
       const cached_ray traversal_ray(r);
-      accum_buffer[index] = Eigen::Vector4f(0, 0, 0, 1);
+      accum_buffer[index] =
+          Eigen::Vector4f(clear_color(0), clear_color(1), clear_color(2), 1.0f);
 
       int pid = -1;
       Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);

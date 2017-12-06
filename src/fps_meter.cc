@@ -1,6 +1,7 @@
 #include "fps_meter.h"
 
 namespace spray {
+namespace chrono {
 
 void fps_meter::measure() {
   const auto current_time = std::chrono::system_clock::now();
@@ -19,4 +20,5 @@ void fps_meter::measure() {
   }
 }
 
+}  // namespace chrono
 }  // namespace spray
