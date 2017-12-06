@@ -1,6 +1,7 @@
 #ifndef SPRAY_KERNEL_H_
 #define SPRAY_KERNEL_H_
 
+#include <random>
 #include "aabb.h"
 #include "camera.h"
 #include "intersection.h"
@@ -14,6 +15,12 @@ struct kernel {
   camera cam;
   scene s;
   Eigen::Vector3f clear_color;
+  std::mt19937 rng;
+  int sample_count;
+
+  static constexpr int max_sample_count = 16;
+
+  void reset();
 
   void render();
   void render_bvh();

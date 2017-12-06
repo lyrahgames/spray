@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include <cassert>
 #include <cmath>
+#include <random>
 #include "orthonormal_frame.h"
 #include "ray.h"
 
@@ -29,6 +30,8 @@ class camera {
   void look_at(const Vector3f& eye, const Vector3f& center, const Vector3f& up);
   void set_screen_resolution(int width, int height);
   void set_field_of_view(float fov);
+  void set_vertical_field_of_view(float fov) { set_field_of_view(fov); }
+  void set_horizontal_field_of_view(float fov);
 
  private:
   void compute_pixel_size();
@@ -46,6 +49,9 @@ class camera {
 
 // col in right direction; row in up direction
 ray primary_ray(const camera& cam, int col, int row);
+
+ray jittered_primary_ray(const camera& cam, int col, int row,
+                         std::mt19937& rng);
 
 }  // namespace ray_tracer
 }  // namespace spray
