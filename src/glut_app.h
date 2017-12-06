@@ -12,6 +12,7 @@
 #include <GL/glut.h>
 #endif
 
+#include "aabb.h"
 #include "fps_meter.h"
 #include "kernel.h"
 #include "orthonormal_frame.h"

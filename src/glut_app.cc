@@ -10,24 +10,30 @@ void init(int argc, char** argv) {
     std::cout << "usage: spray <file name>" << std::endl;
     exit(0);
   }
+  data.rtkernel.s = ray_tracer::load_stl(argv[1]);
+  data.rtkernel.s.build_morton_bvh();
+
+  ray_tracer::aabb bounding_box = ray_tracer::bounds(data.rtkernel.s);
+  // data.rtkernel.tree = build(data.rtkernel.s);
 
   data.opengl_rendering = false;
   data.clear_color = Eigen::Vector3f(0.2f, 0.2f, 0.2f);
   data.fpsm = fps_meter(5.0f);
-  data.rtkernel.s = ray_tracer::load_stl(argv[1]);
   data.rtkernel.cam.set_screen_resolution(320, 320);
   data.rtkernel.cam.set_field_of_view(0.5f * M_PI);
   data.camera_altitude = 0.0f;
   data.camera_azimuth = 0.0f;
-  data.camera_distance = 1.0f * data.rtkernel.s.radius /
+  data.camera_distance = 1.5f * ray_tracer::radius(bounding_box) /
                          tanf(0.5f * data.rtkernel.cam.field_of_view());
-  data.world = ray_tracer::blender_orthonormal_frame(data.rtkernel.s.center);
+  data.world =
+      ray_tracer::blender_orthonormal_frame(ray_tracer::center(bounding_box));
 
-  std::cout << "primitive count: " << data.rtkernel.s.primitive_vector.size()
+  std::cout << "primitive count: " << data.rtkernel.s.primitive_data.size()
             << std::endl;
-  std::cout << "scene min: " << data.rtkernel.s.min.transpose() << std::endl
-            << "scene max: " << data.rtkernel.s.max.transpose() << std::endl
-            << "scene radius: " << data.rtkernel.s.radius << std::endl;
+  std::cout << "scene min: " << bounding_box.min.transpose() << std::endl
+            << "scene max: " << bounding_box.max.transpose() << std::endl
+            << "scene radius: " << ray_tracer::radius(bounding_box)
+            << std::endl;
   std::cout << "world origin: " << data.world.origin().transpose() << std::endl;
   std::cout << "camera distance: " << data.camera_distance << std::endl;
 
@@ -95,12 +101,11 @@ void process_normal_keys(unsigned char key, int x, int y) {
       break;
     case glut_key_b:
       data.camera_azimuth = data.camera_altitude = 0.0f;
-      data.world =
-          ray_tracer::blender_orthonormal_frame(data.rtkernel.s.center);
+      data.world = ray_tracer::blender_orthonormal_frame(data.world.origin());
       break;
     case glut_key_g:
       data.camera_azimuth = data.camera_altitude = 0.0f;
-      data.world = ray_tracer::opengl_orthonormal_frame(data.rtkernel.s.center);
+      data.world = ray_tracer::opengl_orthonormal_frame(data.world.origin());
       break;
     case glut_key_w:
       data.opengl_rendering = !data.opengl_rendering;
@@ -177,7 +182,8 @@ void compute_camera_frame() {
 
 void render_with_ray_tracer() {
   data.rtkernel.clear_color = data.clear_color;
-  data.rtkernel.render();
+  // data.rtkernel.render();
+  data.rtkernel.render_bvh();
   glDrawPixels(data.rtkernel.cam.screen_width(),
                data.rtkernel.cam.screen_height(), GL_RGBA, GL_FLOAT,
                data.rtkernel.accum_buffer.data());
@@ -188,16 +194,18 @@ void render_with_opengl() {
                1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  for (int i = 0; i < static_cast<int>(data.rtkernel.s.primitive_vector.size());
+  for (int i = 0; i < static_cast<int>(data.rtkernel.s.primitive_data.size());
        ++i) {
+    const ray_tracer::scene::primitive& p = data.rtkernel.s.primitive_data[i];
+
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.primitive_vector[i].vertex[0].data()));
+        data.rtkernel.s.vertex_data[p.vertex_id[0]].position.data()));
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.primitive_vector[i].vertex[1].data()));
+        data.rtkernel.s.vertex_data[p.vertex_id[1]].position.data()));
     glVertex3fv(reinterpret_cast<GLfloat*>(
-        data.rtkernel.s.primitive_vector[i].vertex[2].data()));
+        data.rtkernel.s.vertex_data[p.vertex_id[2]].position.data()));
     glEnd();
   }
 }
