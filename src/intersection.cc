@@ -76,5 +76,20 @@ bool intersect(const ray& r, const aabb& box, float& t) {
   return (t_min <= t_max) && (t_max > 0.0f);
 }
 
+bool intersect(const cached_ray& r, const aabb& box) {
+  Eigen::Vector3f t_min_vector, t_max_vector;
+  for (int i = 0; i < 3; ++i) {
+    t_min_vector(i) = (box[r.direction_is_negative(i)](i) - r.origin(i)) *
+                      r.inverse_direction(i);
+    t_max_vector(i) = (box[1 - r.direction_is_negative(i)](i) - r.origin(i)) *
+                      r.inverse_direction(i);
+  }
+
+  const float t_min = t_min_vector.maxCoeff();
+  const float t_max = t_max_vector.minCoeff();
+
+  return (t_min <= t_max) && (t_max > 0.0f);
+}
+
 }  // namespace ray_tracer
 }  // namespace spray

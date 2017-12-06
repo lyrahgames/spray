@@ -9,6 +9,9 @@ namespace ray_tracer {
 struct aabb {
   Eigen::Vector3f min;
   Eigen::Vector3f max;
+
+  Eigen::Vector3f& operator[](int i) { return (&min)[i]; }
+  const Eigen::Vector3f& operator[](int i) const { return (&min)[i]; }
 };
 
 aabb bounds(const Eigen::Vector3f& v1, const Eigen::Vector3f& v2);

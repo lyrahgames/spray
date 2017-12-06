@@ -20,6 +20,9 @@ struct kernel {
   void traverse(const ray& r, int* pid, Eigen::Vector3f* uvt);
   void traverse_node(const ray& r, int node_index, int* pid,
                      Eigen::Vector3f* uvt);
+  void traverse(const cached_ray& r, int* pid, Eigen::Vector3f* uvt);
+  void traverse_node(const cached_ray& r, int node_index, int* pid,
+                     Eigen::Vector3f* uvt);
 };
 
 }  // namespace ray_tracer
