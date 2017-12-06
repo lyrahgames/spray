@@ -8,7 +8,7 @@
 namespace spray {
 namespace ray_tracer {
 
-constexpr float intersection_epsilon = 1e-6;
+constexpr float intersection_epsilon = 1e-8;
 
 // moeller-trumbore-algorithm
 bool intersect(const ray& r, const Eigen::Vector3f& vertex0,

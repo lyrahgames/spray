@@ -11,24 +11,29 @@ bool intersect(const ray& r, const Eigen::Vector3f& vertex0,
   const Eigen::Vector3f p_vector = r.direction.cross(edge2);
   const float determinant = edge1.dot(p_vector);
 
-  if (determinant > -intersection_epsilon && determinant < intersection_epsilon)
-    return false;
+  // if (determinant > -intersection_epsilon && determinant <
+  // intersection_epsilon)
+  //   return false;
 
   const float inverse_determinant = 1.0f / determinant;
 
   const Eigen::Vector3f t_vector = r.origin - vertex0;
   uvt(0) = t_vector.dot(p_vector) * inverse_determinant;
 
-  if (uvt(0) < 0.0f || uvt(0) > 1.0f) return false;
+  // if (uvt(0) < 0.0f || uvt(0) > 1.0f) return false;
 
   const Eigen::Vector3f q_vector = t_vector.cross(edge1);
   uvt(1) = r.direction.dot(q_vector) * inverse_determinant;
 
-  if (uvt(1) < 0.0f || uvt(0) + uvt(1) > 1.0f) return false;
+  // if (uvt(1) < 0.0f || uvt(0) + uvt(1) > 1.0f) return false;
 
   uvt(2) = edge2.dot(q_vector) * inverse_determinant;
 
-  return true;
+  // return uvt(2) > 0.0f;
+  return (determinant <= -intersection_epsilon ||
+          determinant >= intersection_epsilon) &&
+         (uvt(0) >= 0.0f && uvt(0) <= 1.0f) &&
+         (uvt(1) >= 0.0f && uvt(0) + uvt(1) <= 1.0f) && (uvt(2) > 0.0f);
 }
 
 bool intersect(const ray& r, const aabb& box) {
@@ -43,7 +48,11 @@ bool intersect(const ray& r, const aabb& box) {
   const Eigen::Vector3f t_max_vector =
       static_cast<Eigen::Vector3f>(t1_vector.max(t2_vector));
 
-  return t_min_vector.maxCoeff() <= t_max_vector.minCoeff();
+  const float t_min = t_min_vector.maxCoeff();
+  const float t_max = t_max_vector.minCoeff();
+
+  // <= is very important for boxes with volume 0
+  return (t_min <= t_max) && (t_max > 0.0f);
 }
 
 bool intersect(const ray& r, const aabb& box, float& t) {
@@ -58,9 +67,13 @@ bool intersect(const ray& r, const aabb& box, float& t) {
   const Eigen::Vector3f t_max_vector =
       static_cast<Eigen::Vector3f>(t1_vector.max(t2_vector));
 
-  t = t_min_vector.maxCoeff();
+  const float t_min = t_min_vector.maxCoeff();
+  const float t_max = t_max_vector.minCoeff();
 
-  return t <= t_max_vector.minCoeff();
+  t = t_min;
+  if (t_min <= 0.0f) t = t_max;
+
+  return (t_min <= t_max) && (t_max > 0.0f);
 }
 
 }  // namespace ray_tracer
