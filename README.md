@@ -53,6 +53,7 @@ In the build directory run the following command.
 Nearly everything will be done as in the ![Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) proposed.
 The one exception is the naming convention for structures and classes.
 Instead of ![CamelCase](https://en.wikipedia.org/wiki/Camel_case) we will use ![snake_case](https://en.wikipedia.org/wiki/Snake_case).
+The first letter will be a capital letter.
 
 ### Git Style Guide
 - ![Git Flow](http://nvie.com/posts/a-successful-git-branching-model/)
