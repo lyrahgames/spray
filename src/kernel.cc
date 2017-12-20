@@ -129,7 +129,9 @@ void kernel::traverse(const cached_ray& r, int* pid, Eigen::Vector3f* uvt) {
 void kernel::traverse_node(const cached_ray& r, int node_index, int* pid,
                            Eigen::Vector3f* uvt) {
   if (scene::binary_bvh::is_leaf(s.bvh.node_data[node_index])) {
-    if (intersect(r, s.bvh.node_data[node_index].box)) {
+    float tmp_t;
+    if (intersect(r, s.bvh.node_data[node_index].box, &tmp_t) &&
+        tmp_t < (*uvt)(2)) {
       const int offset = s.bvh.node_data[node_index].offset;
       const int count = s.bvh.node_data[node_index].count;
 

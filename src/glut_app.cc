@@ -18,7 +18,7 @@ void init(int argc, char** argv) {
   ray_tracer::aabb bounding_box = ray_tracer::bounds(kernel.s);
 
   data.opengl_rendering = false;
-  data.clear_color = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+  data.clear_color = Eigen::Vector3f(0.2f, 0.2f, 0.2f);
   data.fps_meter = chrono::fps_meter(3.0f);
   kernel.cam.set_screen_resolution(320, 320);
   kernel.cam.set_field_of_view(0.5f * M_PI);
