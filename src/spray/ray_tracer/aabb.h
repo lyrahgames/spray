@@ -1,5 +1,5 @@
-#ifndef SPRAY_AABB_H_
-#define SPRAY_AABB_H_
+#ifndef SPRAY_RAY_TRACER_AABB_H_
+#define SPRAY_RAY_TRACER_AABB_H_
 
 #include <Eigen/Dense>
 
@@ -23,4 +23,4 @@ float radius(const aabb& box);
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_AABB_H_
+#endif  // SPRAY_RAY_TRACER_AABB_H_

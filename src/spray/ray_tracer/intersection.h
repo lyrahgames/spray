@@ -1,5 +1,5 @@
-#ifndef SPRAY_INTERSECTION_H_
-#define SPRAY_INTERSECTION_H_
+#ifndef SPRAY_RAY_TRACER_INTERSECTION_H_
+#define SPRAY_RAY_TRACER_INTERSECTION_H_
 
 #include <Eigen/Dense>
 #include "aabb.h"
@@ -24,4 +24,4 @@ bool intersect(const cached_ray& r, const aabb& box, float* t);
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_INTERSECTION_H_
+#endif  // SPRAY_RAY_TRACER_INTERSECTION_H_

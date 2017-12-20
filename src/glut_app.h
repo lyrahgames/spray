@@ -1,5 +1,5 @@
-#ifndef SPRAY_GLUT_APP_H_
-#define SPRAY_GLUT_APP_H_
+#ifndef SPRAY_VIEWER_GLUT_APP_H_
+#define SPRAY_VIEWER_GLUT_APP_H_
 
 #include <Eigen/Dense>
 #include <chrono>
@@ -12,13 +12,8 @@
 #include <GL/glut.h>
 #endif
 
-#include "aabb.h"
-#include "fps_meter.h"
-#include "kernel.h"
-#include "orthonormal_frame.h"
-#include "scene.h"
+#include <spray/spray.h>
 
-namespace spray {
 namespace glut_app {
 
 constexpr unsigned char glut_key_esc = 27;
@@ -38,17 +33,17 @@ struct state {
   int key_modifiers;
   int old_mouse_x;
   int old_mouse_y;
-  ray_tracer::orthonormal_frame world;
+  spray::ray_tracer::orthonormal_frame world;
   float eye_distance;
   float eye_altitude;
   float eye_azimuth;
   bool opengl_rendering;
   Eigen::Vector3f clear_color{0.0f, 0.0f, 0.0f};
-  chrono::fps_meter fps_meter;
+  spray::chrono::fps_meter fps_meter;
 };
 
 extern state data;
-extern ray_tracer::kernel kernel;
+extern spray::ray_tracer::kernel kernel;
 
 void init(int argc, char** argv);
 void exec();
@@ -69,6 +64,5 @@ void render_with_opengl();
 void compute_camera_frame();
 
 }  // namespace glut_app
-}  // namespace spray
 
-#endif  // SPRAY_GLUT_APP_H_
+#endif  // SPRAY_VIEWER_GLUT_APP_H_

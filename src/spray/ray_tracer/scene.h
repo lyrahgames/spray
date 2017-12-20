@@ -1,5 +1,5 @@
-#ifndef SPRAY_SCENE_H_
-#define SPRAY_SCENE_H_
+#ifndef SPRAY_RAY_TRACER_SCENE_H_
+#define SPRAY_RAY_TRACER_SCENE_H_
 
 #include <Eigen/Dense>
 #include <cmath>
@@ -58,4 +58,4 @@ scene load_stl(const std::string& file_name);
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_SCENE_H_
+#endif  // SPRAY_RAY_TRACER_SCENE_H_

@@ -1,5 +1,5 @@
-#ifndef SPRAY_RAY_H_
-#define SPRAY_RAY_H_
+#ifndef SPRAY_RAY_TRACER_RAY_H_
+#define SPRAY_RAY_TRACER_RAY_H_
 
 #include <Eigen/Dense>
 
@@ -29,4 +29,4 @@ struct cached_ray : public ray {
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_RAY_H_
+#endif  // SPRAY_RAY_TRACER_RAY_H_

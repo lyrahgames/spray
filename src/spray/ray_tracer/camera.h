@@ -1,5 +1,5 @@
-#ifndef SPRAY_CAMERA_H_
-#define SPRAY_CAMERA_H_
+#ifndef SPRAY_RAY_TRACER_CAMERA_H_
+#define SPRAY_RAY_TRACER_CAMERA_H_
 
 #include <Eigen/Dense>
 #include <cassert>
@@ -56,4 +56,4 @@ ray jittered_primary_ray(const camera& cam, int col, int row,
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_CAMERA_H_
+#endif  // SPRAY_RAY_TRACER_CAMERA_H_

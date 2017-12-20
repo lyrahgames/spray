@@ -1,5 +1,5 @@
-#ifndef SPRAY_KERNEL_H_
-#define SPRAY_KERNEL_H_
+#ifndef SPRAY_RAY_TRACER_KERNEL_H_
+#define SPRAY_RAY_TRACER_KERNEL_H_
 
 #include <random>
 #include "aabb.h"
@@ -35,4 +35,4 @@ struct kernel {
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_KERNEL_H_
+#endif  // SPRAY_RAY_TRACER_KERNEL_H_

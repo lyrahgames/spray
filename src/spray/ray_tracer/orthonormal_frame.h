@@ -1,5 +1,5 @@
-#ifndef SPRAY_ORTHONORMAL_FRAME_H_
-#define SPRAY_ORTHONORMAL_FRAME_H_
+#ifndef SPRAY_RAY_TRACER_ORTHONORMAL_FRAME_H_
+#define SPRAY_RAY_TRACER_ORTHONORMAL_FRAME_H_
 
 #include <Eigen/Dense>
 #include <cmath>
@@ -52,4 +52,4 @@ Eigen::Vector3f horizontal_coordinates(const orthonormal_frame& base_system,
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_ORTHONORMAL_FRAME_H_
+#endif  // SPRAY_RAY_TRACER_ORTHONORMAL_FRAME_H_

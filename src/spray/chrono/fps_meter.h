@@ -1,5 +1,5 @@
-#ifndef SPRAY_FPS_METER_H_
-#define SPRAY_FPS_METER_H_
+#ifndef SPRAY_CHRONO_FPS_METER_H_
+#define SPRAY_CHRONO_FPS_METER_H_
 
 #include <chrono>
 #include <iostream>
@@ -30,4 +30,4 @@ class fps_meter {
 }  // namespace chrono
 }  // namespace spray
 
-#endif  // SPRAY_FPS_METER_H_
+#endif  // SPRAY_CHRONO_FPS_METER_H_

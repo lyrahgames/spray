@@ -1,7 +1,8 @@
 #include "glut_app.h"
 
-namespace spray {
 namespace glut_app {
+
+using namespace spray;
 
 state data{};
 ray_tracer::kernel kernel;
@@ -232,4 +233,3 @@ void render_with_opengl() {
 }
 
 }  // namespace glut_app
-}  // namespace spray
