@@ -33,17 +33,17 @@ struct state {
   int key_modifiers;
   int old_mouse_x;
   int old_mouse_y;
-  spray::ray_tracer::orthonormal_frame world;
+  spray::ray_tracer::Orthonormal_frame world;
   float eye_distance;
   float eye_altitude;
   float eye_azimuth;
   bool opengl_rendering;
   Eigen::Vector3f clear_color{0.0f, 0.0f, 0.0f};
-  spray::chrono::fps_meter fps_meter;
+  spray::chrono::Fps_meter fps_meter;
 };
 
 extern state data;
-extern spray::ray_tracer::kernel kernel;
+extern spray::ray_tracer::Kernel kernel;
 
 void init(int argc, char** argv);
 void exec();

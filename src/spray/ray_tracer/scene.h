@@ -8,13 +8,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "aabb.h"
+#include "bounding_box.h"
 #include "morton.h"
 
 namespace spray {
 namespace ray_tracer {
 
-struct scene {
+class Scene {
+ public:
   struct vertex {
     Eigen::Vector3f position;
     Eigen::Vector3f normal;
@@ -27,7 +28,7 @@ struct scene {
 
   struct binary_bvh {
     struct node {
-      aabb box;
+      Bounding_box box;
       int child[2];
       int offset;
       int count;
@@ -51,9 +52,9 @@ struct scene {
   binary_bvh bvh;
 };
 
-aabb bounds(const scene& s);
-scene load_stl(const std::string& file_name);
-// scene::binary_bvh morton_bvh(const scene& s);
+Bounding_box bounds(const Scene& s);
+Scene load_stl(const std::string& file_name);
+// Scene::binary_bvh morton_bvh(const Scene& s);
 
 }  // namespace ray_tracer
 }  // namespace spray

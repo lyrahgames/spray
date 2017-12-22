@@ -5,7 +5,7 @@ namespace glut_app {
 using namespace spray;
 
 state data{};
-ray_tracer::kernel kernel;
+ray_tracer::Kernel kernel;
 
 void init(int argc, char** argv) {
   if (argc != 2) {
@@ -16,11 +16,11 @@ void init(int argc, char** argv) {
   kernel.s = ray_tracer::load_stl(argv[1]);
   kernel.s.build_morton_bvh();
 
-  ray_tracer::aabb bounding_box = ray_tracer::bounds(kernel.s);
+  ray_tracer::Bounding_box bounding_box = ray_tracer::bounds(kernel.s);
 
   data.opengl_rendering = false;
   data.clear_color = Eigen::Vector3f(0.2f, 0.2f, 0.2f);
-  data.fps_meter = chrono::fps_meter(3.0f);
+  data.fps_meter = chrono::Fps_meter(3.0f);
   kernel.cam.set_screen_resolution(320, 320);
   kernel.cam.set_field_of_view(0.5f * M_PI);
   kernel.rng = std::mt19937(std::random_device{}());
@@ -36,8 +36,8 @@ void init(int argc, char** argv) {
   std::cout << "primitive count: " << kernel.s.primitive_data.size()
             << std::endl;
   std::cout << "bvh node count: " << kernel.s.bvh.node_data.size() << std::endl;
-  std::cout << "scene min: " << bounding_box.min.transpose() << std::endl
-            << "scene max: " << bounding_box.max.transpose() << std::endl
+  std::cout << "scene min: " << bounding_box.min().transpose() << std::endl
+            << "scene max: " << bounding_box.max().transpose() << std::endl
             << "scene radius: " << ray_tracer::radius(bounding_box)
             << std::endl;
   std::cout << "world origin: " << data.world.origin().transpose() << std::endl;
@@ -218,7 +218,7 @@ void render_with_opengl() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   for (int i = 0; i < static_cast<int>(kernel.s.primitive_data.size()); ++i) {
-    const ray_tracer::scene::primitive& p = kernel.s.primitive_data[i];
+    const ray_tracer::Scene::primitive& p = kernel.s.primitive_data[i];
 
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);

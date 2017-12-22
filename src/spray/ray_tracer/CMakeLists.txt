@@ -7,7 +7,7 @@ add_library(spray.ray_tracer STATIC
   camera.cc
   intersection.cc
   orthonormal_frame.cc
-  aabb.cc
+  bounding_box.cc
   kernel.cc
 )
 
@@ -18,11 +18,11 @@ if (WIN32)
 endif()
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-target_link_libraries(spray.ray_tracer Eigen3::Eigen)
+target_link_libraries(spray.ray_tracer PUBLIC Eigen3::Eigen)
 
 find_package(OpenMP)
 if (OPENMP_CXX_FOUND)
-  target_link_libraries(spray.ray_tracer OpenMP::OpenMP_CXX)
+  target_link_libraries(spray.ray_tracer PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 add_library(spray::ray_tracer ALIAS spray.ray_tracer)

@@ -3,12 +3,12 @@
 namespace spray {
 namespace ray_tracer {
 
-// aabb scene::bounds() const { return ray_tracer::bounds(*this); }
+// Bounding_box Scene::bounds() const { return ray_tracer::bounds(*this); }
 
-void scene::build_morton_bvh() {
+void Scene::build_morton_bvh() {
   if (primitive_data.size() == 0) return;
 
-  const aabb bounding_box = bounds(*this);
+  const Bounding_box box = bounds(*this);
 
   // compute morton codes for primitives
   std::vector<morton::primitive<int>> morton_data(primitive_data.size());
@@ -21,8 +21,8 @@ void scene::build_morton_bvh() {
 
     const Eigen::Array3f tmp =
         static_cast<float>(1 << 10) *
-        (static_cast<Eigen::Array3f>(primitive_center - bounding_box.min) /
-         static_cast<Eigen::Array3f>(bounding_box.max - bounding_box.min));
+        (static_cast<Eigen::Array3f>(primitive_center - box.min()) /
+         static_cast<Eigen::Array3f>(box.max() - box.min()));
 
     uint32_t x_index = static_cast<uint32_t>(std::floor(tmp(0)));
     uint32_t y_index = static_cast<uint32_t>(std::floor(tmp(1)));
@@ -49,7 +49,7 @@ void scene::build_morton_bvh() {
   build_morton_bvh_node(3 * 10, 0, primitive_data.size(), morton_data);
 }
 
-int scene::build_morton_bvh_node(
+int Scene::build_morton_bvh_node(
     int high_bit, int offset, int count,
     const std::vector<morton::primitive<int>>& morton_data) {
   if (high_bit == 0) {
@@ -58,16 +58,20 @@ int scene::build_morton_bvh_node(
     n.offset = offset;
     n.count = count;
 
-    n.box = aabb{Eigen::Vector3f(INFINITY, INFINITY, INFINITY),
-                 Eigen::Vector3f(-INFINITY, -INFINITY, -INFINITY)};
+    n.box =
+        Bounding_box(vertex_data[primitive_data[offset].vertex_id[0]].position);
+    n.box = Bounding_box(
+        n.box, vertex_data[primitive_data[offset].vertex_id[1]].position);
+    n.box = Bounding_box(
+        n.box, vertex_data[primitive_data[offset].vertex_id[2]].position);
 
-    for (int i = offset; i < offset + count; ++i) {
-      n.box =
-          bounds(n.box, vertex_data[primitive_data[i].vertex_id[0]].position);
-      n.box =
-          bounds(n.box, vertex_data[primitive_data[i].vertex_id[1]].position);
-      n.box =
-          bounds(n.box, vertex_data[primitive_data[i].vertex_id[2]].position);
+    for (int i = offset + 1; i < offset + count; ++i) {
+      n.box = Bounding_box(
+          n.box, vertex_data[primitive_data[i].vertex_id[0]].position);
+      n.box = Bounding_box(
+          n.box, vertex_data[primitive_data[i].vertex_id[1]].position);
+      n.box = Bounding_box(
+          n.box, vertex_data[primitive_data[i].vertex_id[2]].position);
     }
 
     bvh.node_data.push_back(n);
@@ -106,31 +110,30 @@ int scene::build_morton_bvh_node(
 
   bvh.node_data[index].child[0] = child0_index;
   bvh.node_data[index].child[1] = child1_index;
-  bvh.node_data[index].box =
-      bounds(bvh.node_data[child0_index].box, bvh.node_data[child1_index].box);
+  bvh.node_data[index].box = Bounding_box(bvh.node_data[child0_index].box,
+                                          bvh.node_data[child1_index].box);
 
   return index;
 }
 
-aabb bounds(const scene& s) {
-  aabb box{Eigen::Vector3f(INFINITY, INFINITY, INFINITY),
-           Eigen::Vector3f(-INFINITY, -INFINITY, -INFINITY)};
+Bounding_box bounds(const Scene& s) {
+  Bounding_box box(s.vertex_data[0].position);
 
-  for (size_t i = 0; i < s.vertex_data.size(); ++i) {
-    box = bounds(box, s.vertex_data[i].position);
+  for (size_t i = 1; i < s.vertex_data.size(); ++i) {
+    box = Bounding_box(box, s.vertex_data[i].position);
   }
 
   return box;
 }
 
-scene load_stl(const std::string& file_name) {
+Scene load_stl(const std::string& file_name) {
   std::fstream in(file_name, std::ios::binary | std::ios::in);
 
   if (!in.is_open()) {
     std::cerr << "File \"" << file_name << "\" could not be opened!"
               << std::endl;
     in.close();
-    return scene{};
+    return Scene{};
   }
 
   // ignore file header
@@ -139,7 +142,7 @@ scene load_stl(const std::string& file_name) {
   std::uint32_t primitive_count;
   in.read(reinterpret_cast<char*>(&primitive_count), 4);
 
-  scene s;
+  Scene s;
   s.primitive_data.resize(primitive_count);
   s.vertex_data.resize(3 * primitive_count);
 

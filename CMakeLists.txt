@@ -9,7 +9,7 @@ add_executable(spray_viewer
   src/glut_app.cc
 )
 
-target_link_libraries(spray_viewer spray::spray)
+target_link_libraries(spray_viewer PUBLIC spray)
 
 set_property(TARGET spray_viewer PROPERTY CXX_STANDARD 14)
 
@@ -21,7 +21,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
-target_link_libraries(spray_viewer
+target_link_libraries(spray_viewer PRIVATE
   Eigen3::Eigen
   OpenGL::GL
   OpenGL::GLU

@@ -11,13 +11,13 @@
 namespace spray {
 namespace ray_tracer {
 
-class camera {
+class Camera {
   using Vector3f = Eigen::Vector3f;
 
  public:
   const Vector3f& position() const { return frame_.origin(); }
   Vector3f direction() const { return -frame_.back(); }
-  const orthonormal_frame& frame() const { return frame_; }
+  const Orthonormal_frame& frame() const { return frame_; }
   float field_of_view() const { return field_of_view_; }
   float vertical_field_of_view() const;
   float horizontal_field_of_view() const;
@@ -38,7 +38,7 @@ class camera {
   void compute_aspect_ratio();
 
  private:
-  orthonormal_frame frame_;
+  Orthonormal_frame frame_;
 
   float field_of_view_;
   int screen_height_;
@@ -47,10 +47,8 @@ class camera {
   float aspect_ratio_;
 };
 
-// col in right direction; row in up direction
-ray primary_ray(const camera& cam, int col, int row);
-
-ray jittered_primary_ray(const camera& cam, int col, int row,
+Ray primary_ray(const Camera& camera, int col, int row);
+Ray jittered_primary_ray(const Camera& camera, int col, int row,
                          std::mt19937& rng);
 
 }  // namespace ray_tracer

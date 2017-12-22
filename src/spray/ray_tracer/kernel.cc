@@ -3,24 +3,24 @@
 namespace spray {
 namespace ray_tracer {
 
-void kernel::reset() {
+void Kernel::reset() {
   sample_count = 0;
   accum_buffer.resize(cam.screen_width() * cam.screen_height());
   accum_buffer.assign(accum_buffer.size(),
                       Eigen::Vector4f(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-void kernel::render() {
+void Kernel::render() {
   accum_buffer.resize(cam.screen_width() * cam.screen_height());
 
-  // const aabb box(s.min, s.max);
-  const aabb box = bounds(s);
+  // const Bounding_box box(s.min, s.max);
+  const Bounding_box box = bounds(s);
 
 #pragma omp parallel for
   for (int i = 0; i < cam.screen_height(); ++i) {
     for (int j = 0; j < cam.screen_width(); ++j) {
       const int index = cam.screen_width() * i + j;
-      const ray r = primary_ray(cam, j, i);
+      const Ray r = primary_ray(cam, j, i);
       accum_buffer[index] =
           Eigen::Vector4f(clear_color(0), clear_color(1), clear_color(2), 1.0f);
 
@@ -31,7 +31,7 @@ void kernel::render() {
         for (int p = 0; p < static_cast<int>(s.primitive_data.size()); ++p) {
           Eigen::Vector3f tmp_uvt;
 
-          const scene::primitive& prim = s.primitive_data[p];
+          const Scene::primitive& prim = s.primitive_data[p];
 
           if (intersect(r, s.vertex_data[prim.vertex_id[0]].position,
                         s.vertex_data[prim.vertex_id[1]].position,
@@ -44,7 +44,7 @@ void kernel::render() {
         }
 
         if (pid != -1) {
-          float dot = -r.direction.dot(s.primitive_data[pid].normal);
+          float dot = -r.direction().dot(s.primitive_data[pid].normal);
           if (dot < 0.0f) dot = 0.0f;
           accum_buffer[index] = Eigen::Vector4f(dot, dot, dot, 1.0f);
         }
@@ -53,7 +53,7 @@ void kernel::render() {
   }
 }
 
-void kernel::render_bvh() {
+void Kernel::render_bvh() {
   // accum_buffer.resize(cam.screen_width() * cam.screen_height());
 
   ++sample_count;
@@ -62,9 +62,9 @@ void kernel::render_bvh() {
   for (int i = 0; i < cam.screen_height(); ++i) {
     for (int j = 0; j < cam.screen_width(); ++j) {
       const int index = cam.screen_width() * i + j;
-      // const ray r = primary_ray(cam, j, i);
-      const ray r = jittered_primary_ray(cam, j, i, rng);
-      const cached_ray traversal_ray(r);
+      // const Ray r = primary_ray(cam, j, i);
+      const Ray r = jittered_primary_ray(cam, j, i, rng);
+      const Cached_ray traversal_ray(r);
       Eigen::Vector4f color(clear_color(0), clear_color(1), clear_color(2),
                             1.0f);
 
@@ -76,7 +76,7 @@ void kernel::render_bvh() {
 
       if (pid != -1) {
         const float dot =
-            std::abs(-r.direction.dot(s.primitive_data[pid].normal));
+            std::abs(-r.direction().dot(s.primitive_data[pid].normal));
         color = Eigen::Vector4f(dot, dot, dot, 1);
       }
 
@@ -87,20 +87,20 @@ void kernel::render_bvh() {
   }
 }
 
-void kernel::traverse(const ray& r, int* pid, Eigen::Vector3f* uvt) {
+void Kernel::traverse(const Ray& r, int* pid, Eigen::Vector3f* uvt) {
   traverse_node(r, 0, pid, uvt);
 }
 
-void kernel::traverse_node(const ray& r, int node_index, int* pid,
+void Kernel::traverse_node(const Ray& r, int node_index, int* pid,
                            Eigen::Vector3f* uvt) {
-  if (scene::binary_bvh::is_leaf(s.bvh.node_data[node_index])) {
+  if (Scene::binary_bvh::is_leaf(s.bvh.node_data[node_index])) {
     if (intersect(r, s.bvh.node_data[node_index].box)) {
       const int offset = s.bvh.node_data[node_index].offset;
       const int count = s.bvh.node_data[node_index].count;
 
       for (int p = offset; p < offset + count; ++p) {
         Eigen::Vector3f tmp_uvt(0.0f, 0.0f, INFINITY);
-        const scene::primitive& prim = s.primitive_data[p];
+        const Scene::primitive& prim = s.primitive_data[p];
 
         if (intersect(r, s.vertex_data[prim.vertex_id[0]].position,
                       s.vertex_data[prim.vertex_id[1]].position,
@@ -122,13 +122,13 @@ void kernel::traverse_node(const ray& r, int node_index, int* pid,
   }
 }
 
-void kernel::traverse(const cached_ray& r, int* pid, Eigen::Vector3f* uvt) {
+void Kernel::traverse(const Cached_ray& r, int* pid, Eigen::Vector3f* uvt) {
   traverse_node(r, 0, pid, uvt);
 }
 
-void kernel::traverse_node(const cached_ray& r, int node_index, int* pid,
+void Kernel::traverse_node(const Cached_ray& r, int node_index, int* pid,
                            Eigen::Vector3f* uvt) {
-  if (scene::binary_bvh::is_leaf(s.bvh.node_data[node_index])) {
+  if (Scene::binary_bvh::is_leaf(s.bvh.node_data[node_index])) {
     float tmp_t;
     if (intersect(r, s.bvh.node_data[node_index].box, &tmp_t) &&
         tmp_t < (*uvt)(2)) {
@@ -137,7 +137,7 @@ void kernel::traverse_node(const cached_ray& r, int node_index, int* pid,
 
       for (int p = offset; p < offset + count; ++p) {
         Eigen::Vector3f tmp_uvt(0.0f, 0.0f, INFINITY);
-        const scene::primitive& prim = s.primitive_data[p];
+        const Scene::primitive& prim = s.primitive_data[p];
 
         if (intersect(r, s.vertex_data[prim.vertex_id[0]].position,
                       s.vertex_data[prim.vertex_id[1]].position,

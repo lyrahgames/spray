@@ -7,12 +7,12 @@
 namespace spray {
 namespace ray_tracer {
 
-class orthonormal_frame {
+class Orthonormal_frame {
   using Vector3f = Eigen::Vector3f;
 
  public:
-  orthonormal_frame();
-  orthonormal_frame(const Vector3f& origin, const Vector3f& up,
+  Orthonormal_frame();
+  Orthonormal_frame(const Vector3f& origin, const Vector3f& up,
                     const Vector3f& back);
 
   const Vector3f& origin() const { return origin_; }
@@ -33,19 +33,19 @@ class orthonormal_frame {
   Vector3f right_;
 };
 
-inline orthonormal_frame blender_orthonormal_frame(
+inline Orthonormal_frame blender_orthonormal_frame(
     const Eigen::Vector3f& origin) {
-  return orthonormal_frame(origin, Eigen::Vector3f(0.0, -1.0f, 0.0f),
+  return Orthonormal_frame(origin, Eigen::Vector3f(0.0, -1.0f, 0.0f),
                            Eigen::Vector3f(0.0f, 0.0f, 1.0f));
 }
 
-inline orthonormal_frame opengl_orthonormal_frame(
+inline Orthonormal_frame opengl_orthonormal_frame(
     const Eigen::Vector3f& origin) {
-  return orthonormal_frame(origin, Eigen::Vector3f(0.0f, 0.0f, 1.0f),
+  return Orthonormal_frame(origin, Eigen::Vector3f(0.0f, 0.0f, 1.0f),
                            Eigen::Vector3f(0.0f, 1.0f, 0.0f));
 }
 
-Eigen::Vector3f horizontal_coordinates(const orthonormal_frame& base_system,
+Eigen::Vector3f horizontal_coordinates(const Orthonormal_frame& base_system,
                                        float radius, float altitude,
                                        float azimuth);
 

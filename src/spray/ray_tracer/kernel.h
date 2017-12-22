@@ -2,7 +2,7 @@
 #define SPRAY_RAY_TRACER_KERNEL_H_
 
 #include <random>
-#include "aabb.h"
+#include "bounding_box.h"
 #include "camera.h"
 #include "intersection.h"
 #include "scene.h"
@@ -10,10 +10,10 @@
 namespace spray {
 namespace ray_tracer {
 
-struct kernel {
+struct Kernel {
   std::vector<Eigen::Vector4f> accum_buffer;
-  camera cam;
-  scene s;
+  Camera cam;
+  Scene s;
   Eigen::Vector3f clear_color;
   std::mt19937 rng;
   int sample_count;
@@ -24,11 +24,11 @@ struct kernel {
 
   void render();
   void render_bvh();
-  void traverse(const ray& r, int* pid, Eigen::Vector3f* uvt);
-  void traverse_node(const ray& r, int node_index, int* pid,
+  void traverse(const Ray& r, int* pid, Eigen::Vector3f* uvt);
+  void traverse_node(const Ray& r, int node_index, int* pid,
                      Eigen::Vector3f* uvt);
-  void traverse(const cached_ray& r, int* pid, Eigen::Vector3f* uvt);
-  void traverse_node(const cached_ray& r, int node_index, int* pid,
+  void traverse(const Cached_ray& r, int* pid, Eigen::Vector3f* uvt);
+  void traverse_node(const Cached_ray& r, int node_index, int* pid,
                      Eigen::Vector3f* uvt);
 };
 
