@@ -6,7 +6,7 @@ add_subdirectory(src/spray)
 
 add_executable(spray_viewer
   src/main.cc
-  src/glut_app.cc
+  src/glut_application.cc
 )
 
 target_link_libraries(spray_viewer PUBLIC spray)

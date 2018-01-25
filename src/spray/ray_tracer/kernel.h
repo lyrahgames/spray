@@ -10,17 +10,20 @@
 namespace spray {
 namespace ray_tracer {
 
-struct Kernel {
-  std::vector<Eigen::Vector4f> accum_buffer;
-  Camera cam;
-  Scene s;
-  Eigen::Vector3f clear_color;
-  std::mt19937 rng;
-  int sample_count;
+class Kernel {
+ public:
+  Kernel();
 
-  static constexpr int max_sample_count = 16;
+  const std::vector<Eigen::Vector4f>& pixel_buffer() const {
+    return pixel_buffer_;
+  }
+  const Camera& camera() const { return *camera_; }
+  const Scene& scene() const { return *scene_; }
+  const Eigen::Vector3f& clear_color() const { return clear_color_; }
 
-  void reset();
+  void set_camera(const Camera* c) { camera_ = c; }
+  void set_scene(const Scene* s) { scene_ = s; }
+  void reset_cache();
 
   void render();
   void render_bvh();
@@ -30,6 +33,14 @@ struct Kernel {
   void traverse(const Cached_ray& r, int* pid, Eigen::Vector3f* uvt);
   void traverse_node(const Cached_ray& r, int node_index, int* pid,
                      Eigen::Vector3f* uvt);
+
+ private:
+  std::vector<Eigen::Vector4f> pixel_buffer_;
+  const Camera* camera_;
+  const Scene* scene_;
+  Eigen::Vector3f clear_color_;
+  std::mt19937 rng_;
+  int sample_count_;
 };
 
 }  // namespace ray_tracer
