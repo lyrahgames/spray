@@ -20,6 +20,7 @@ endif()
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(glfw3 REQUIRED)
 
 target_link_libraries(spray_viewer PRIVATE
   Eigen3::Eigen
@@ -27,3 +28,16 @@ target_link_libraries(spray_viewer PRIVATE
   OpenGL::GLU
   GLUT::GLUT
 )
+
+if (glfw3_FOUND)
+  add_executable(glfw_viewer
+    src/glfw_application.cc
+    src/glfw_viewer.cc
+  )
+
+  target_link_libraries(glfw_viewer PRIVATE
+    glfw
+    OpenGL::GL
+    OpenGL::GLU
+  )
+endif()
