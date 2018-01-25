@@ -20,7 +20,7 @@ endif()
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
-find_package(glfw3 REQUIRED)
+find_package(glfw3)
 
 target_link_libraries(spray_viewer PRIVATE
   Eigen3::Eigen
