@@ -1,5 +1,5 @@
-#ifndef SPRAY_FPS_METER_H_
-#define SPRAY_FPS_METER_H_
+#ifndef SPRAY_CHRONO_FPS_METER_H_
+#define SPRAY_CHRONO_FPS_METER_H_
 
 #include <chrono>
 #include <iostream>
@@ -7,9 +7,9 @@
 namespace spray {
 namespace chrono {
 
-class fps_meter {
+class Fps_meter {
  public:
-  fps_meter(float time_bound = 1.0f)
+  Fps_meter(float time_bound = 1.0f)
       : last_time_(std::chrono::system_clock::now()),
         frame_count_(0),
         time_bound_(time_bound),
@@ -30,4 +30,4 @@ class fps_meter {
 }  // namespace chrono
 }  // namespace spray
 
-#endif  // SPRAY_FPS_METER_H_
+#endif  // SPRAY_CHRONO_FPS_METER_H_

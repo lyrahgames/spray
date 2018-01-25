@@ -1,5 +1,5 @@
-#ifndef SPRAY_MORTON_H_
-#define SPRAY_MORTON_H_
+#ifndef SPRAY_RAY_TRACER_MORTON_H_
+#define SPRAY_RAY_TRACER_MORTON_H_
 
 #include <cstdint>
 #include <utility>
@@ -86,4 +86,4 @@ inline void radix_sort(std::vector<primitive<T>> &v) {
 }  // namespace ray_tracer
 }  // namespace spray
 
-#endif  // SPRAY_MORTON_H_
+#endif  // SPRAY_RAY_TRACER_MORTON_H_

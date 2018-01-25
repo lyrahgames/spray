@@ -3,7 +3,7 @@
 namespace spray {
 namespace chrono {
 
-void fps_meter::measure() {
+void Fps_meter::measure() {
   const auto current_time = std::chrono::system_clock::now();
   frame_count_++;
 
