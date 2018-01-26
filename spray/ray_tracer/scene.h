@@ -2,14 +2,9 @@
 #define SPRAY_RAY_TRACER_SCENE_H_
 
 #include <Eigen/Dense>
-#include <cmath>
-#include <cstdint>
-#include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 #include "bounding_box.h"
-#include "morton.h"
 
 namespace spray {
 namespace ray_tracer {
@@ -35,6 +30,7 @@ class Scene {
   ~Scene() = default;
 
   const std::vector<vertex>& vertex_data() const { return vertex_data_; }
+  std::vector<vertex>& vertex_data() { return vertex_data_; }
   const std::vector<primitive>& primitive_data() const {
     return primitive_data_;
   }

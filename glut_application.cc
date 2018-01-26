@@ -83,7 +83,7 @@ void initialize(int argc, char** argv) {
 
   scene = spray::ray_tracer::Scene(argv[1]);
   bvh = spray::ray_tracer::Binary_bvh(scene);
-  // scene.build_morton_bvh();
+
   spray::ray_tracer::Bounding_box bounding_box =
       spray::ray_tracer::bounds(scene);
 
@@ -93,10 +93,12 @@ void initialize(int argc, char** argv) {
   eye_distance = scene_radius / std::sin(0.5f * camera.field_of_view());
   world = spray::ray_tracer::blender_orthonormal_frame(
       spray::ray_tracer::center(bounding_box));
+
   kernel.set_camera(&camera);
   kernel.set_scene(&scene);
   kernel.set_bvh(&bvh);
   kernel.reset_cache();
+
   compute_camera_frame();
 
   std::cout << "primitive count: " << scene.primitive_data().size()

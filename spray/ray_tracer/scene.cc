@@ -1,4 +1,7 @@
 #include "scene.h"
+#include <cmath>
+#include <cstdint>
+#include <fstream>
 #include <stdexcept>
 
 namespace spray {

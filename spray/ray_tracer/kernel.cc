@@ -59,38 +59,74 @@ void Kernel::render() {
 }
 
 void Kernel::render_bvh() {
-  // pixel_buffer_.resize(camera().screen_width() * camera().screen_height());
-
   ++sample_count_;
 
+  constexpr int pixel_block_size = 4;
+
 #pragma omp parallel for
-  for (int i = 0; i < camera().screen_height(); ++i) {
-    for (int j = 0; j < camera().screen_width(); ++j) {
-      const int index = camera().screen_width() * i + j;
-      // const Ray r = primary_ray(camera(), j, i);
-      const Ray r = jittered_primary_ray(camera(), j, i, rng_);
-      const Cached_ray traversal_ray(r);
-      Eigen::Vector4f color(clear_color_(0), clear_color_(1), clear_color_(2),
-                            1.0f);
+  for (int q = 0; q < camera().screen_width(); q += pixel_block_size) {
+    for (int p = 0; p < camera().screen_height(); p += pixel_block_size) {
+      for (int j = q;
+           j < std::min(q + pixel_block_size, camera().screen_width()); ++j) {
+        for (int i = p;
+             i < std::min(p + pixel_block_size, camera().screen_height());
+             ++i) {
+          const int index = camera().screen_width() * i + j;
+          // const Ray r = primary_ray(camera(), j, i);
+          const Ray r = jittered_primary_ray(camera(), j, i, rng_);
+          const Cached_ray traversal_ray(r);
+          Eigen::Vector4f color(clear_color_(0), clear_color_(1),
+                                clear_color_(2), 1.0f);
 
-      int pid = -1;
-      Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
+          int pid = -1;
+          Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
 
-      // traverse(r, &pid, &uvt);
-      traverse(traversal_ray, &pid, &uvt);
+          // traverse(r, &pid, &uvt);
+          traverse(traversal_ray, &pid, &uvt);
 
-      if (pid != -1) {
-        const float dot =
-            std::abs(-r.direction().dot(scene().primitive_data()[pid].normal));
-        color = Eigen::Vector4f(dot, dot, dot, 1);
+          if (pid != -1) {
+            const float dot = std::abs(
+                -r.direction().dot(scene().primitive_data()[pid].normal));
+            color = Eigen::Vector4f(dot, dot, dot, 1);
+          }
+
+          pixel_buffer_[index] =
+              (static_cast<float>(sample_count_ - 1) * pixel_buffer_[index] +
+               color) /
+              static_cast<float>(sample_count_);
+        }
       }
-
-      pixel_buffer_[index] =
-          (static_cast<float>(sample_count_ - 1) * pixel_buffer_[index] +
-           color) /
-          static_cast<float>(sample_count_);
     }
   }
+
+  // for (int i = 0; i < camera().screen_height(); ++i) {
+  //   for (int j = 0; j < camera().screen_width(); ++j) {
+  //     const int index = camera().screen_width() * i + j;
+  //     // const Ray r = primary_ray(camera(), j, i);
+  //     const Ray r = jittered_primary_ray(camera(), j, i, rng_);
+  //     const Cached_ray traversal_ray(r);
+  //     Eigen::Vector4f color(clear_color_(0), clear_color_(1),
+  //     clear_color_(2),
+  //                           1.0f);
+
+  //     int pid = -1;
+  //     Eigen::Vector3f uvt(0.0f, 0.0f, INFINITY);
+
+  //     // traverse(r, &pid, &uvt);
+  //     traverse(traversal_ray, &pid, &uvt);
+
+  //     if (pid != -1) {
+  //       const float dot = std::abs(
+  //           -r.direction().dot(scene().primitive_data()[pid].normal));
+  //       color = Eigen::Vector4f(dot, dot, dot, 1);
+  //     }
+
+  //     pixel_buffer_[index] =
+  //         (static_cast<float>(sample_count_ - 1) * pixel_buffer_[index] +
+  //          color) /
+  //         static_cast<float>(sample_count_);
+  //   }
+  // }
 }
 
 void Kernel::traverse(const Ray& r, int* pid, Eigen::Vector3f* uvt) {
