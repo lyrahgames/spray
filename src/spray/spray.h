@@ -2,6 +2,7 @@
 #define SPRAY_SPRAY_H_
 
 #include "chrono/fps_meter.h"
+#include "ray_tracer/binary_bvh.h"
 #include "ray_tracer/bounding_box.h"
 #include "ray_tracer/camera.h"
 #include "ray_tracer/intersection.h"

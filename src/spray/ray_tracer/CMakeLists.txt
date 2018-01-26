@@ -9,6 +9,7 @@ add_library(spray.ray_tracer STATIC
   orthonormal_frame.cc
   bounding_box.cc
   kernel.cc
+  binary_bvh.cc
 )
 
 set_property(TARGET spray.ray_tracer PROPERTY CXX_STANDARD 14)

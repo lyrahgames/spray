@@ -36,6 +36,7 @@ spray::chrono::Fps_meter fps_meter = spray::chrono::Fps_meter(3.0f);
 spray::ray_tracer::Kernel kernel{};
 spray::ray_tracer::Scene scene{};
 spray::ray_tracer::Camera camera{};
+spray::ray_tracer::Binary_bvh bvh{};
 
 // function declarations
 void initialize(int argc, char** argv);
@@ -80,8 +81,9 @@ void initialize(int argc, char** argv) {
     exit(0);
   }
 
-  scene = spray::ray_tracer::load_stl(argv[1]);
-  scene.build_morton_bvh();
+  scene = spray::ray_tracer::Scene(argv[1]);
+  bvh = spray::ray_tracer::Binary_bvh(scene);
+  // scene.build_morton_bvh();
   spray::ray_tracer::Bounding_box bounding_box =
       spray::ray_tracer::bounds(scene);
 
@@ -93,11 +95,13 @@ void initialize(int argc, char** argv) {
       spray::ray_tracer::center(bounding_box));
   kernel.set_camera(&camera);
   kernel.set_scene(&scene);
+  kernel.set_bvh(&bvh);
   kernel.reset_cache();
   compute_camera_frame();
 
-  std::cout << "primitive count: " << scene.primitive_data.size() << std::endl;
-  std::cout << "bvh node count: " << scene.bvh.node_data.size() << std::endl;
+  std::cout << "primitive count: " << scene.primitive_data().size()
+            << std::endl;
+  std::cout << "bvh node count: " << bvh.node_data().size() << std::endl;
   std::cout << "scene min: " << bounding_box.min().transpose() << std::endl
             << "scene max: " << bounding_box.max().transpose() << std::endl
             << "scene radius: " << spray::ray_tracer::radius(bounding_box)
@@ -242,17 +246,17 @@ void render_with_opengl() {
   glClearColor(0, 0, 0, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  for (int i = 0; i < static_cast<int>(scene.primitive_data.size()); ++i) {
-    const spray::ray_tracer::Scene::primitive& p = scene.primitive_data[i];
+  for (int i = 0; i < static_cast<int>(scene.primitive_data().size()); ++i) {
+    const spray::ray_tracer::Scene::primitive& p = scene.primitive_data()[i];
 
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);
-    glVertex3fv(reinterpret_cast<GLfloat*>(
-        scene.vertex_data[p.vertex_id[0]].position.data()));
-    glVertex3fv(reinterpret_cast<GLfloat*>(
-        scene.vertex_data[p.vertex_id[1]].position.data()));
-    glVertex3fv(reinterpret_cast<GLfloat*>(
-        scene.vertex_data[p.vertex_id[2]].position.data()));
+    glVertex3fv(reinterpret_cast<const GLfloat*>(
+        scene.vertex_data()[p.vertex_id[0]].position.data()));
+    glVertex3fv(reinterpret_cast<const GLfloat*>(
+        scene.vertex_data()[p.vertex_id[1]].position.data()));
+    glVertex3fv(reinterpret_cast<const GLfloat*>(
+        scene.vertex_data()[p.vertex_id[2]].position.data()));
     glEnd();
   }
 }

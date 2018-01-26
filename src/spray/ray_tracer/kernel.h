@@ -2,6 +2,7 @@
 #define SPRAY_RAY_TRACER_KERNEL_H_
 
 #include <random>
+#include "binary_bvh.h"
 #include "bounding_box.h"
 #include "camera.h"
 #include "intersection.h"
@@ -19,10 +20,12 @@ class Kernel {
   }
   const Camera& camera() const { return *camera_; }
   const Scene& scene() const { return *scene_; }
+  const Binary_bvh& bvh() const { return *bvh_; }
   const Eigen::Vector3f& clear_color() const { return clear_color_; }
 
   void set_camera(const Camera* c) { camera_ = c; }
   void set_scene(const Scene* s) { scene_ = s; }
+  void set_bvh(const Binary_bvh* bvh) { bvh_ = bvh; }
   void reset_cache();
 
   void render();
@@ -38,6 +41,7 @@ class Kernel {
   std::vector<Eigen::Vector4f> pixel_buffer_;
   const Camera* camera_;
   const Scene* scene_;
+  const Binary_bvh* bvh_;
   Eigen::Vector3f clear_color_;
   std::mt19937 rng_;
   int sample_count_;

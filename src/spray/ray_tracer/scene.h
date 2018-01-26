@@ -26,35 +26,26 @@ class Scene {
     Eigen::Vector3f normal;
   };
 
-  struct binary_bvh {
-    struct node {
-      Bounding_box box;
-      int child[2];
-      int offset;
-      int count;
+  Scene(const std::string& file_path);
+  Scene() = default;
+  Scene(const Scene&) = default;
+  Scene& operator=(const Scene&) = default;
+  Scene(Scene&&) = default;
+  Scene& operator=(Scene&&) = default;
+  ~Scene() = default;
 
-      bool is_leaf() const { return (child[0] == -1); }
-    };
+  const std::vector<vertex>& vertex_data() const { return vertex_data_; }
+  const std::vector<primitive>& primitive_data() const {
+    return primitive_data_;
+  }
+  std::vector<primitive>& primitive_data() { return primitive_data_; }
 
-    static bool is_leaf(const node& n) { return (n.child[0] == -1); }
-
-    std::vector<node> node_data;
-  };
-
-  // aabb bounds() const;
-  void build_morton_bvh();
-  int build_morton_bvh_node(
-      int high_bit, int offset, int count,
-      const std::vector<morton::primitive<int>>& morton_data);
-
-  std::vector<vertex> vertex_data;
-  std::vector<primitive> primitive_data;
-  binary_bvh bvh;
+ private:
+  std::vector<vertex> vertex_data_;
+  std::vector<primitive> primitive_data_;
 };
 
 Bounding_box bounds(const Scene& s);
-Scene load_stl(const std::string& file_name);
-// Scene::binary_bvh morton_bvh(const Scene& s);
 
 }  // namespace ray_tracer
 }  // namespace spray
