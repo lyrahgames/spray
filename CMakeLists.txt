@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.9)
 
 project(spray_viewer VERSION 0.1)
 
-add_subdirectory(src/spray)
+add_subdirectory(spray)
 
 add_executable(spray_viewer
-  src/main.cc
-  src/glut_application.cc
+  main.cc
+  glut_application.cc
 )
 
 target_link_libraries(spray_viewer PUBLIC spray)
@@ -31,8 +31,8 @@ target_link_libraries(spray_viewer PRIVATE
 
 if (glfw3_FOUND)
   add_executable(glfw_viewer
-    src/glfw_application.cc
-    src/glfw_viewer.cc
+    glfw_application.cc
+    glfw_viewer.cc
   )
 
   target_link_libraries(glfw_viewer PRIVATE
