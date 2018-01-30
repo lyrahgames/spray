@@ -63,7 +63,7 @@ void Kernel::render_bvh() {
 
   constexpr int pixel_block_size = 4;
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic)
   for (int q = 0; q < camera().screen_width(); q += pixel_block_size) {
     for (int p = 0; p < camera().screen_height(); p += pixel_block_size) {
       for (int j = q;
@@ -85,8 +85,18 @@ void Kernel::render_bvh() {
           traverse(traversal_ray, &pid, &uvt);
 
           if (pid != -1) {
-            const float dot = std::abs(
-                -r.direction().dot(scene().primitive_data()[pid].normal));
+            const Scene::primitive& primitive = scene().primitive_data()[pid];
+
+            float dot;
+            Eigen::Vector3f shader_normal =
+                scene().normal_data()[primitive.normal_id[0]] *
+                    (1.0f - uvt[0] - uvt[1]) +
+                scene().normal_data()[primitive.normal_id[1]] * uvt[0] +
+                scene().normal_data()[primitive.normal_id[2]] * uvt[1];
+            shader_normal.normalize();
+
+            dot = std::abs(-r.direction().dot(shader_normal));
+
             color = Eigen::Vector4f(dot, dot, dot, 1);
           }
 

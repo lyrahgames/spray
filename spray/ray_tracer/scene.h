@@ -16,8 +16,11 @@ class Scene {
     Eigen::Vector3f normal;
   };
 
+  using normal = Eigen::Vector3f;
+
   struct primitive {
     int vertex_id[3];
+    int normal_id[3];
     Eigen::Vector3f normal;
   };
 
@@ -31,6 +34,8 @@ class Scene {
 
   const std::vector<vertex>& vertex_data() const { return vertex_data_; }
   std::vector<vertex>& vertex_data() { return vertex_data_; }
+  const std::vector<normal>& normal_data() const { return normal_data_; }
+  std::vector<normal>& normal_data() { return normal_data_; }
   const std::vector<primitive>& primitive_data() const {
     return primitive_data_;
   }
@@ -38,6 +43,7 @@ class Scene {
 
  private:
   std::vector<vertex> vertex_data_;
+  std::vector<normal> normal_data_;
   std::vector<primitive> primitive_data_;
 };
 

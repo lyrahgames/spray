@@ -42,6 +42,11 @@ Scene::Scene(const std::string& file_path) {
                      vertex_data_[3 * i + 0].position);
       primitive_data_[i].normal.normalize();
     }
+
+    primitive_data_[i].normal_id[0] = normal_data_.size();
+    primitive_data_[i].normal_id[1] = normal_data_.size();
+    primitive_data_[i].normal_id[2] = normal_data_.size();
+    normal_data_.push_back(primitive_data_[i].normal);
   }
 }
 

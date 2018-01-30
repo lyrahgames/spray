@@ -81,7 +81,28 @@ void initialize(int argc, char** argv) {
     exit(0);
   }
 
-  scene = spray::ray_tracer::Scene(argv[1]);
+  const std::string file_path{argv[1]};
+
+  const auto begin_file_extension = file_path.find_last_of('.');
+  if (begin_file_extension == file_path.size())
+    throw std::runtime_error("Files without extension are not supported.");
+
+  const std::string file_extension =
+      file_path.substr(file_path.find_last_of('.') + 1);
+
+  if (file_extension == "obj" || file_extension == "OBJ") {
+    spray::ray_tracer::Obj_loader obj{argv[1]};
+    std::cout << "vertex count = " << obj.vertex_data.size() << std::endl;
+    std::cout << "normal count = " << obj.normal_data.size() << std::endl;
+    std::cout << "uv count = " << obj.uv_data.size() << std::endl;
+    std::cout << "face count = " << obj.face_data.size() << std::endl;
+    scene = obj();
+  } else if (file_extension == "stl" || file_extension == "STL") {
+    scene = spray::ray_tracer::Scene(argv[1]);
+  } else {
+    throw std::runtime_error("This file type is not supported.");
+  }
+
   bvh = spray::ray_tracer::Binary_bvh(scene);
 
   spray::ray_tracer::Bounding_box bounding_box =
