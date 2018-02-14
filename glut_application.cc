@@ -40,16 +40,16 @@ spray::ray_tracer::Binary_bvh bvh{};
 
 // function declarations
 void initialize(int argc, char** argv);
-void close();
+// void close();
 void render();
 void resize(int width, int height);
-void idle();
+// void idle();
 void process_normal_keys(unsigned char key, int x, int y);
 void process_special_keys(int key, int x, int y);
 void process_mouse_buttons(int button, int button_state, int x, int y);
 void process_mouse_move(int x, int y);
 void process_passive_mouse_move(int x, int y);
-void process_mouse_wheel(int wheel, int direction, int x, int y);
+// void process_mouse_wheel(int wheel, int direction, int x, int y);
 void render_with_ray_tracer();
 void render_with_opengl();
 void compute_camera_frame();
@@ -157,7 +157,7 @@ void render() {
   glutSwapBuffers();
 }
 
-void idle() {}
+// void idle() {}
 
 void process_normal_keys(unsigned char key, int x, int y) {
   switch (key) {
@@ -219,11 +219,11 @@ void process_mouse_move(int x, int y) {
 
     // moving
     case GLUT_ACTIVE_SHIFT:
-      world.set_origin(world.origin() -
-                       camera.frame().right() * x_difference *
-                           camera.pixel_size() * eye_distance +
-                       camera.frame().up() * y_difference *
-                           camera.pixel_size() * eye_distance);
+      world.origin(world.origin() -
+                   camera.frame().right() * x_difference * camera.pixel_size() *
+                       eye_distance +
+                   camera.frame().up() * y_difference * camera.pixel_size() *
+                       eye_distance);
       break;
 
     // rotating

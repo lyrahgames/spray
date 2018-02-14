@@ -7,6 +7,8 @@
 namespace spray {
 namespace ray_tracer {
 
+// does not have to be optimized
+// only needed for viewer interaction
 class Orthonormal_frame {
   using Vector3f = Eigen::Vector3f;
 
@@ -14,13 +16,28 @@ class Orthonormal_frame {
   Orthonormal_frame();
   Orthonormal_frame(const Vector3f& origin, const Vector3f& up,
                     const Vector3f& back);
+  Orthonormal_frame(const Orthonormal_frame&) = default;
+  Orthonormal_frame& operator=(const Orthonormal_frame&) = default;
+  Orthonormal_frame(Orthonormal_frame&&) = default;
+  Orthonormal_frame& operator=(Orthonormal_frame&&) = default;
+  ~Orthonormal_frame() = default;
 
+  Vector3f& origin() { return origin_; }
   const Vector3f& origin() const { return origin_; }
+  Orthonormal_frame& origin(const Vector3f& origin) {
+    origin_ = origin;
+    return *this;
+  }
   const Vector3f& up() const { return up_; }
+  Vector3f down() const { return -up_; }
   const Vector3f& right() const { return right_; }
+  Vector3f left() const { return -right_; }
   const Vector3f& back() const { return back_; }
+  Vector3f front() const { return -back_; }
 
-  void set_origin(const Vector3f& origin) { origin_ = origin; }
+  Vector3f operator()(const Vector3f& v) const {
+    return origin_ + v[0] * right_ + v[1] * up_ + v[2] * back_;
+  }
 
  private:
   void compute_basis_from_up_and_back();
@@ -31,6 +48,8 @@ class Orthonormal_frame {
   Vector3f back_;
   Vector3f up_;
   Vector3f right_;
+
+  Eigen::Matrix<float, 3, 4, Eigen::RowMajor> matrix_;
 };
 
 inline Orthonormal_frame blender_orthonormal_frame(
