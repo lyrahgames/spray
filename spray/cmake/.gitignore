@@ -1,0 +1,3 @@
+!*.cmake.in
+!*.pc.in
+!*.cmake

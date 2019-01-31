@@ -51,7 +51,7 @@ add_library(${PROJECT_NAMESPACE}::${PROJECT_NAME}
 )
 
 # Deploying
-# include(${PROJECT_NAME}Install)
-# include(${PROJECT_NAME}PkgconfigInstall)
-# include(${PROJECT_NAME}Uninstall)
-# include(${PROJECT_NAME}Export)
+include(${PROJECT_NAME}Install)
+include(${PROJECT_NAME}PkgconfigInstall)
+include(${PROJECT_NAME}Uninstall)
+include(${PROJECT_NAME}Export)
