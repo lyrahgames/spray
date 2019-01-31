@@ -1,13 +1,19 @@
-cmake_minimum_required(VERSION 3.9)
-
-project(spray_test)
+cmake_minimum_required(VERSION 3.10)
+project(spray-tests)
 enable_testing()
 
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(doctest REQUIRED)
+if (NOT TARGET spray::spray)
+  find_package(spray CONFIG REQUIRED)
+endif()
 
-add_executable(orthonormal_frame_test orthonormal_frame_test.cc)
-target_link_libraries(orthonormal_frame_test PRIVATE Boost::boost Boost::unit_test_framework)
-target_compile_definitions(orthonormal_frame_test PRIVATE BOOST_TEST_DYN_LINK)
-target_link_libraries(orthonormal_frame_test PRIVATE spray)
-set(TARGET orthonormal_frame_test PROPERTY CXX_STANDARD 14)
-add_test(orthonormal_frame_test orthonormal_frame_test)
+add_executable(${PROJECT_NAME}
+  doctest_main.cc
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+    doctest::doctest
+)
+
+add_test(${PROJECT_NAME} ${PROJECT_NAME})

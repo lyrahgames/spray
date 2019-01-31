@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 3.9)
-
-project(spray VERSION 0.1)
-
 add_subdirectory(ray_tracer)
 add_subdirectory(chrono)
 
