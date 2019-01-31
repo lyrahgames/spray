@@ -2,9 +2,22 @@ version: 2
 
 workflows:
   version: 2
-  build:
+  build_test_install:
     jobs:
       - build
+      - test:
+          requires:
+            - build
+      - export_test:
+          requires:
+            - build
+      - install:
+          requires:
+            - build
+      - install_test:
+          requires:
+            - install
+      - code_coverage
 
 jobs:
   build:
@@ -17,9 +30,90 @@ jobs:
           command: |
             mkdir build
             cd build
-            cmake -DCMAKE_BUILD_TYPE=Release ..
+            cmake ..
             cmake --build .
       - persist_to_workspace:
           root: .
           paths:
             - build
+
+  test:
+    docker:
+      - image: lyrahgames/graphics-environment:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test
+          command: |
+            cd build
+            ctest --verbose
+
+  export_test:
+    docker:
+      - image: lyrahgames/graphics-environment:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: export_test
+          command: |
+            cd build
+            cmake ..
+            cd ../tests
+            mkdir build
+            cd build
+            cmake ..
+            cmake --build .
+            ctest --verbose
+
+  install:
+    docker:
+      - image: lyrahgames/graphics-environment:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: install
+          command: |
+            cd build
+            cmake --build . --target install
+      - persist_to_workspace:
+          root: /
+          paths:
+            - usr/local
+
+  install_test:
+    docker:
+      - image: lyrahgames/graphics-environment:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /
+      - run:
+          name: install_test
+          command: |
+            cd tests
+            mkdir build
+            cd build
+            cmake ..
+            cmake --build .
+            ctest --verbose
+
+  code_coverage:
+    docker:
+      - image: lyrahgames/graphics-environment:latest
+    steps:
+      - checkout
+      - run:
+          name: code_coverage
+          command: |
+            mkdir build
+            cd build
+            CXXFLAGS="-g" cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja ..
+            cmake --build .
+            kcov --include-path=.. ./code_coverage tests/spray-tests
+            bash <(curl -s https://codecov.io/bash) -s code_coverage
