@@ -1,5 +1,7 @@
 *
 
+!.circleci
+
 !docs
 !spray
 !tests

@@ -1,0 +1,25 @@
+version: 2
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+
+jobs:
+  build:
+    docker:
+      - image: lyrahgames/graphics-environment:latest
+    steps:
+      - checkout
+      - run:
+          name: build
+          command: |
+            mkdir build
+            cd build
+            cmake -DCMAKE_BUILD_TYPE=Release ..
+            cmake --build .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
