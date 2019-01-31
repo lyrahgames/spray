@@ -6,7 +6,7 @@ project(spray_viewer VERSION 0.1)
 #set(BOOST_USE_MULTITHREADED ON)
 
 add_subdirectory(spray)
-add_subdirectory(test)
+add_subdirectory(tests)
 
 add_executable(spray_viewer
   main.cc

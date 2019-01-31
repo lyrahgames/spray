@@ -1,2 +1,12 @@
-*.sublime-workspace
-*build*
+*
+
+!docs
+!spray
+!tests
+
+!*.cc
+!*.h
+
+!CMakeLists.txt
+!README.md
+!.gitignore
