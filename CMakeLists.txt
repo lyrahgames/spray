@@ -8,6 +8,8 @@ project(spray_viewer VERSION 0.1)
 add_subdirectory(spray)
 add_subdirectory(tests)
 
+add_subdirectory(viewer)
+
 add_executable(spray_viewer
   main.cc
   glut_application.cc

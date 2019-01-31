@@ -5,6 +5,7 @@
 !docs
 !spray
 !tests
+!viewer
 
 !*.cc
 !*.h
