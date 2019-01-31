@@ -5,7 +5,6 @@
 #include <cmath>
 
 namespace spray {
-namespace ray_tracer {
 
 // does not have to be optimized
 // only needed for viewer interaction
@@ -68,7 +67,6 @@ Eigen::Vector3f horizontal_coordinates(const Orthonormal_frame& base_system,
                                        float radius, float altitude,
                                        float azimuth);
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_ORTHONORMAL_FRAME_H_

@@ -9,7 +9,6 @@
 #include "scene.h"
 
 namespace spray {
-namespace ray_tracer {
 
 class Kernel {
  public:
@@ -47,7 +46,6 @@ class Kernel {
   int sample_count_;
 };
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_KERNEL_H_

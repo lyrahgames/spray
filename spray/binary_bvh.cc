@@ -2,7 +2,6 @@
 #include <stdexcept>
 
 namespace spray {
-namespace ray_tracer {
 
 Binary_bvh::Binary_bvh(Scene& scene) : scene_(&scene) {
   if (scene.primitive_data().size() == 0)
@@ -132,5 +131,4 @@ int Binary_bvh::build_morton_bvh_node(
   return index;
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

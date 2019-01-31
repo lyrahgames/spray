@@ -7,7 +7,6 @@
 #include "bounding_box.h"
 
 namespace spray {
-namespace ray_tracer {
 
 class Scene {
  public:
@@ -49,7 +48,6 @@ class Scene {
 
 Bounding_box bounds(const Scene& s);
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_SCENE_H_

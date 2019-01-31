@@ -6,7 +6,6 @@
 #include <vector>
 
 namespace spray {
-namespace ray_tracer {
 
 class Bounding_box;
 
@@ -37,15 +36,14 @@ class Bounding_box {
   const Eigen::Vector3f& max() const { return max_; }
   const Eigen::Vector3f& operator[](int index) const { return (&min_)[index]; }
 
-  float radius() { return ray_tracer::radius(*this); }
-  Eigen::Vector3f center() { return ray_tracer::center(*this); }
+  float radius() { return spray::radius(*this); }
+  Eigen::Vector3f center() { return spray::center(*this); }
 
  private:
   Eigen::Vector3f min_;
   Eigen::Vector3f max_;
 };
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_BOUNDING_BOX_H_

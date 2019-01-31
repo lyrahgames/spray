@@ -1,7 +1,6 @@
 #include "intersection.h"
 
 namespace spray {
-namespace ray_tracer {
 
 bool intersect(const Ray& r, const Eigen::Vector3f& vertex0,
                const Eigen::Vector3f& vertex1, const Eigen::Vector3f& vertex2,
@@ -113,5 +112,4 @@ bool intersect(const Cached_ray& r, const Bounding_box& box, float* t) {
   return (t_min <= t_max) && (t_max > 0.0f);
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

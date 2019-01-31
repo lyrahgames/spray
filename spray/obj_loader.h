@@ -11,7 +11,6 @@
 #include "scene.h"
 
 namespace spray {
-namespace ray_tracer {
 
 class Obj_loader {
  public:
@@ -191,9 +190,8 @@ class Obj_loader {
   std::vector<normal_type> normal_data;
   std::vector<uv_type> uv_data;
   std::vector<face_type> face_data;
-};  // namespace ray_tracer
+};
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_OBJ_LOADER_H_

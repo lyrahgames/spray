@@ -27,16 +27,16 @@ constexpr float eye_distance_min = 0.00001f;
 int key_modifiers{};
 int old_mouse_x{};
 int old_mouse_y{};
-spray::ray_tracer::Orthonormal_frame world{};
+spray::Orthonormal_frame world{};
 float eye_distance = 1.0f;
 float eye_altitude = 0.0f;
 float eye_azimuth = 0.0f;
 bool opengl_rendering = false;
-spray::chrono::Fps_meter fps_meter = spray::chrono::Fps_meter(3.0f);
-spray::ray_tracer::Kernel kernel{};
-spray::ray_tracer::Scene scene{};
-spray::ray_tracer::Camera camera{};
-spray::ray_tracer::Binary_bvh bvh{};
+spray::Fps_meter fps_meter{3.0f};
+spray::Kernel kernel{};
+spray::Scene scene{};
+spray::Camera camera{};
+spray::Binary_bvh bvh{};
 
 // function declarations
 void initialize(int argc, char** argv);
@@ -91,29 +91,27 @@ void initialize(int argc, char** argv) {
       file_path.substr(file_path.find_last_of('.') + 1);
 
   if (file_extension == "obj" || file_extension == "OBJ") {
-    spray::ray_tracer::Obj_loader obj{argv[1]};
+    spray::Obj_loader obj{argv[1]};
     std::cout << "vertex count = " << obj.vertex_data.size() << std::endl;
     std::cout << "normal count = " << obj.normal_data.size() << std::endl;
     std::cout << "uv count = " << obj.uv_data.size() << std::endl;
     std::cout << "face count = " << obj.face_data.size() << std::endl;
     scene = obj();
   } else if (file_extension == "stl" || file_extension == "STL") {
-    scene = spray::ray_tracer::Scene(argv[1]);
+    scene = spray::Scene(argv[1]);
   } else {
     throw std::runtime_error("This file type is not supported.");
   }
 
-  bvh = spray::ray_tracer::Binary_bvh(scene);
+  bvh = spray::Binary_bvh(scene);
 
-  spray::ray_tracer::Bounding_box bounding_box =
-      spray::ray_tracer::bounds(scene);
+  spray::Bounding_box bounding_box = spray::bounds(scene);
 
   camera.set_screen_resolution(320, 320);
   camera.set_field_of_view(0.5f * M_PI);
-  const float scene_radius = spray::ray_tracer::radius(bounding_box);
+  const float scene_radius = spray::radius(bounding_box);
   eye_distance = scene_radius / std::sin(0.5f * camera.field_of_view());
-  world = spray::ray_tracer::blender_orthonormal_frame(
-      spray::ray_tracer::center(bounding_box));
+  world = spray::blender_orthonormal_frame(spray::center(bounding_box));
 
   kernel.set_camera(&camera);
   kernel.set_scene(&scene);
@@ -127,8 +125,7 @@ void initialize(int argc, char** argv) {
   std::cout << "bvh node count: " << bvh.node_data().size() << std::endl;
   std::cout << "scene min: " << bounding_box.min().transpose() << std::endl
             << "scene max: " << bounding_box.max().transpose() << std::endl
-            << "scene radius: " << spray::ray_tracer::radius(bounding_box)
-            << std::endl;
+            << "scene radius: " << spray::radius(bounding_box) << std::endl;
   std::cout << "world origin: " << world.origin().transpose() << std::endl;
   std::cout << "camera distance: " << eye_distance << std::endl;
 }
@@ -167,12 +164,12 @@ void process_normal_keys(unsigned char key, int x, int y) {
 
     case 'b':  // set to blender coordinate system
       eye_azimuth = eye_altitude = 0.0f;
-      world = spray::ray_tracer::blender_orthonormal_frame(world.origin());
+      world = spray::blender_orthonormal_frame(world.origin());
       break;
 
     case 'g':  // set to opengl coordinate system
       eye_azimuth = eye_altitude = 0.0f;
-      world = spray::ray_tracer::opengl_orthonormal_frame(world.origin());
+      world = spray::opengl_orthonormal_frame(world.origin());
       break;
 
     case 'w':  // toggle rendering of wireframe via opengl
@@ -248,8 +245,8 @@ void process_passive_mouse_move(int x, int y) {
 }
 
 void compute_camera_frame() {
-  camera.look_at(spray::ray_tracer::horizontal_coordinates(
-                     world, eye_distance, eye_altitude, eye_azimuth),
+  camera.look_at(spray::horizontal_coordinates(world, eye_distance,
+                                               eye_altitude, eye_azimuth),
                  world.origin(), world.up());
   kernel.reset_cache();
 
@@ -270,7 +267,7 @@ void render_with_opengl() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   for (int i = 0; i < static_cast<int>(scene.primitive_data().size()); ++i) {
-    const spray::ray_tracer::Scene::primitive& p = scene.primitive_data()[i];
+    const spray::Scene::primitive& p = scene.primitive_data()[i];
 
     glBegin(GL_TRIANGLES);
     glColor3f(1.0f, 1.0f, 1.0f);

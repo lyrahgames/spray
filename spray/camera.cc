@@ -1,7 +1,6 @@
 #include "camera.h"
 
 namespace spray {
-namespace ray_tracer {
 
 float Camera::vertical_field_of_view() const {
   // return 2.0 * atanf(tanf(field_of_view_ * 0.5f) / aspect_ratio_);
@@ -117,5 +116,4 @@ Ray jittered_primary_ray(const Camera& camera, int col, int row,
   return ray;
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

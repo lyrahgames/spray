@@ -6,7 +6,6 @@
 #include "ray.h"
 
 namespace spray {
-namespace ray_tracer {
 
 constexpr float intersection_epsilon = 1e-7;
 
@@ -21,7 +20,6 @@ bool intersect(const Ray& r, const Bounding_box& box, float& t);
 bool intersect(const Cached_ray& r, const Bounding_box& box);
 bool intersect(const Cached_ray& r, const Bounding_box& box, float* t);
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_INTERSECTION_H_

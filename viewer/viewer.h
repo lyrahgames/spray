@@ -41,8 +41,8 @@ class Viewer : public QOpenGLWidget {
   float eye_azimuth = 0.0f;
   float eye_altitude = 0.0f;
 
-  spray::ray_tracer::Scene scene_;
-  spray::ray_tracer::Bounding_box bounding_box_;
+  spray::Scene scene_;
+  spray::Bounding_box bounding_box_;
 
   void compute_look_at();
   void compute_automatic_view();

@@ -9,7 +9,6 @@
 #include "ray.h"
 
 namespace spray {
-namespace ray_tracer {
 
 class Camera {
   using Vector3f = Eigen::Vector3f;
@@ -51,7 +50,6 @@ Ray primary_ray(const Camera& camera, int col, int row);
 Ray jittered_primary_ray(const Camera& camera, int col, int row,
                          std::mt19937& rng);
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_CAMERA_H_

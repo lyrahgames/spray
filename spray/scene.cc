@@ -5,7 +5,6 @@
 #include <stdexcept>
 
 namespace spray {
-namespace ray_tracer {
 
 Scene::Scene(const std::string& file_path) {
   std::fstream file(file_path, std::ios::binary | std::ios::in);
@@ -60,5 +59,4 @@ Bounding_box bounds(const Scene& scene) {
   return box;
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

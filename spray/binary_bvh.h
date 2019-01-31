@@ -13,7 +13,6 @@
 #include "scene.h"
 
 namespace spray {
-namespace ray_tracer {
 
 class Binary_bvh {
  public:
@@ -44,7 +43,6 @@ class Binary_bvh {
   std::vector<node> node_data_;
 };
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_BINARY_BVH_H_

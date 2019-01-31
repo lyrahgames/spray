@@ -5,7 +5,6 @@
 #include <utility>
 
 namespace spray {
-namespace ray_tracer {
 
 class Ray {
  public:
@@ -54,7 +53,6 @@ class Cached_ray : public Ray {
   Eigen::Vector3i direction_is_negative_;
 };
 
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_RAY_H_

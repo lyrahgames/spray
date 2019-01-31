@@ -1,7 +1,6 @@
 #include "orthonormal_frame.h"
 
 namespace spray {
-namespace ray_tracer {
 
 Orthonormal_frame::Orthonormal_frame()
     : origin_(Vector3f(0.0f, 0.0f, 0.0f)),
@@ -41,5 +40,4 @@ Eigen::Vector3f horizontal_coordinates(const Orthonormal_frame& system,
          system.origin();
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

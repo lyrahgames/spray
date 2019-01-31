@@ -1,7 +1,6 @@
 #include "kernel.h"
 
 namespace spray {
-namespace ray_tracer {
 
 Kernel::Kernel()
     : rng_(std::mt19937{std::random_device{}()}), sample_count_{0} {}
@@ -213,5 +212,4 @@ void Kernel::traverse_node(const Cached_ray& r, int node_index, int* pid,
   }
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

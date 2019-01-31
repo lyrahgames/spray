@@ -1,7 +1,6 @@
 #include "bounding_box.h"
 
 namespace spray {
-namespace ray_tracer {
 
 // aabb bounds(const Eigen::Vector3f& v1, const Eigen::Vector3f& v2) {
 //   const Eigen::Vector3f min = static_cast<Eigen::Vector3f>(
@@ -42,5 +41,4 @@ float radius(const Bounding_box& box) {
   return 0.5f * (box.max() - box.min()).norm();
 }
 
-}  // namespace ray_tracer
 }  // namespace spray

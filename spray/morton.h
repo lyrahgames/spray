@@ -6,7 +6,6 @@
 #include <vector>
 
 namespace spray {
-namespace ray_tracer {
 namespace morton {
 
 template <typename T>
@@ -83,7 +82,6 @@ inline void radix_sort(std::vector<primitive<T>> &v) {
 }
 
 }  // namespace morton
-}  // namespace ray_tracer
 }  // namespace spray
 
 #endif  // SPRAY_RAY_TRACER_MORTON_H_
