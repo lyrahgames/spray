@@ -75,6 +75,12 @@
 'spray' stands for 'simulated particle ray tracing'.
 The goal of the project is to merge the art of ray tracing with computational fluid simulations based on particles.
 
+## Dependencies
+- [Eigen 3.3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+- [OpenGL](https://www.opengl.org/)
+- [GLUT](https://www.opengl.org/resources/libraries/glut/)
+- [Qt5](https://www.qt.io/)
+
 ## Building
 For starting with the build process do the following.
 
@@ -114,8 +120,3 @@ In the build directory run the following command.
 In the build directory run the following command.
 
     spray <filename to stl/obj file>
-
-## Dependencies
-- [Eigen 3.3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
-- [OpenGL](https://www.opengl.org/)
-- [GLUT](https://www.opengl.org/resources/libraries/glut/)
